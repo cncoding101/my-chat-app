@@ -1,0 +1,40 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "worker"
+    },
+    {
+      "path": "app"
+    }
+  ],
+  "settings": {
+    "eslint.enable": true,
+    "eslint.useFlatConfig": true,
+    "eslint.workingDirectories": [
+      {
+        "pattern": "./app"
+      }
+    ],
+    "eslint.validate": ["javascript", "typescript", "svelte"],
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "prettier.enable": true,
+    "prettier.requireConfig": true,
+    "prettier.documentSelectors": ["**/*.{js,ts,svelte,json,css,html}"],
+    "[svelte]": {
+      "editor.defaultFormatter": "svelte.svelte-vscode"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+  }
+}
