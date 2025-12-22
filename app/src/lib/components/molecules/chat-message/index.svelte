@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { tv } from 'tailwind-variants';
+	import { Text } from '@/components/atoms/text';
+	import { type Role, RoleEnum } from '@/schemas/api/chat';
 	import { cn } from '@/utils/helpers/shadcn';
 
 	interface Props {
 		message: string;
-		role: 'user' | 'assistant';
+		role: Role;
 	}
 
 	let { message, role }: Props = $props();
@@ -13,8 +15,8 @@
 		base: 'flex w-full',
 		variants: {
 			role: {
-				user: 'justify-start',
-				assistant: 'justify-end'
+				[RoleEnum.USER]: 'justify-start',
+				[RoleEnum.ASSISTANT]: 'justify-end'
 			}
 		}
 	});
@@ -23,8 +25,8 @@
 		base: 'p-2 rounded-lg max-w-[80%]',
 		variants: {
 			role: {
-				user: 'bg-primary text-primary-foreground',
-				assistant: 'bg-accent text-accent-foreground'
+				[RoleEnum.USER]: 'bg-primary text-primary-foreground',
+				[RoleEnum.ASSISTANT]: 'bg-accent text-accent-foreground'
 			}
 		}
 	});
@@ -32,6 +34,6 @@
 
 <div class={containerVariants({ role })}>
 	<div class={cn(messageVariants({ role }))}>
-		{message}
+		<Text variant="paragraph">{message}</Text>
 	</div>
 </div>

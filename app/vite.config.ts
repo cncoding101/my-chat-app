@@ -2,6 +2,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
+import './src/lib/config/sanitizedConfig.server';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],

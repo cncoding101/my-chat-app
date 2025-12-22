@@ -14,7 +14,8 @@
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
-		"test:e2e": "playwright test"
+		"test:e2e": "playwright test",
+		"bootstrap:db": "prisma migrate dev && prisma generate"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
@@ -22,11 +23,13 @@
 		"@iconify/svelte": "^5.1.0",
 		"@lucide/svelte": "^0.554.0",
 		"@playwright/test": "^1.56.1",
+		"@prisma/client": "^7.1.0",
 		"@sveltejs/adapter-node": "^5.4.0",
 		"@sveltejs/kit": "^2.47.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@tailwindcss/vite": "^4.1.14",
 		"@types/node": "^22",
+		"@types/pg": "^8.16.0",
 		"@vitest/browser-playwright": "^4.0.5",
 		"clsx": "^2.1.1",
 		"eslint": "^9.38.0",
@@ -40,6 +43,7 @@
 		"prettier": "^3.6.2",
 		"prettier-plugin-svelte": "^3.4.0",
 		"prettier-plugin-tailwindcss": "^0.7.1",
+		"prisma": "^7.1.0",
 		"svelte": "^5.41.0",
 		"svelte-check": "^4.3.3",
 		"tailwind-merge": "^3.4.0",
@@ -51,5 +55,12 @@
 		"vite": "^7.1.10",
 		"vitest": "^4.0.5",
 		"vitest-browser-svelte": "^2.0.1"
+	},
+	"dependencies": {
+		"@prisma/adapter-pg": "^7.2.0",
+		"dotenv": "^17.2.3",
+		"pg": "^8.16.3",
+		"sweetalert2": "^11.26.17",
+		"zod": "^4.1.13"
 	}
 }

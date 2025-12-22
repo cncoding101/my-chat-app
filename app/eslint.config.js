@@ -82,6 +82,7 @@ export default defineConfig(
 					selector: 'typeProperty'
 				}
 			],
+			'no-console': 'off',
 			// General rules
 			'no-duplicate-imports': 'off',
 			'no-negated-condition': 'error',
@@ -92,7 +93,6 @@ export default defineConfig(
 					props: true
 				}
 			],
-			'no-console': 'error',
 			'prefer-arrow/prefer-arrow-functions': [
 				'error',
 				{

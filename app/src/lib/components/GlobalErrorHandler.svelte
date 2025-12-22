@@ -1,0 +1,43 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import Swal from 'sweetalert2';
+
+	let { children } = $props();
+
+	onMount(() => {
+		const handleRejection = (event: PromiseRejectionEvent) => {
+			const error = event.reason;
+			const message = error instanceof Error ? error.message : 'An unknown error occurred';
+
+			Swal.fire({
+				icon: 'error',
+				title: 'Application Error',
+				text: message,
+				confirmButtonText: 'OK',
+				heightAuto: false
+			});
+		};
+
+		const handleError = (event: ErrorEvent) => {
+			const message = event.message || 'An unknown error occurred';
+
+			Swal.fire({
+				icon: 'error',
+				title: 'Application Error',
+				text: message,
+				confirmButtonText: 'OK',
+				heightAuto: false
+			});
+		};
+
+		window.addEventListener('unhandledrejection', handleRejection);
+		window.addEventListener('error', handleError);
+
+		return () => {
+			window.removeEventListener('unhandledrejection', handleRejection);
+			window.removeEventListener('error', handleError);
+		};
+	});
+</script>
+
+{@render children()}

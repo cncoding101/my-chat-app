@@ -1,27 +1,22 @@
 <script lang="ts">
-	import { ChatMessages } from '@/components/molecules/chat-messages';
+	import { sendMessage } from '$lib/api/frontend/chat';
 	import { ChatInput } from '@/components/organisms/chat-input';
+	import { ChatMessages } from '@/components/organisms/chat-messages';
+	import type { Message } from '@/schemas/api/chat';
+
+	let { initialMessages = [] }: { initialMessages?: Message[] } = $props();
+
+	let messages = $state<Message[]>(initialMessages);
+
+	const handleSendMessage = async (message: string) => {
+		await sendMessage(message);
+	};
 </script>
 
 <div class="grid h-full grid-rows-[1fr_auto]">
 	<div class="overflow-y-auto">
-		<ChatMessages
-			messages={[
-				{
-					id: '1',
-					chatId: '1',
-					role: 'user',
-					content: 'Hello, how are you?'
-				},
-				{
-					id: '2',
-					chatId: '1',
-					role: 'assistant',
-					content: "I'm good, thank you!"
-				}
-			]}
-		/>
+		<ChatMessages {messages} />
 	</div>
 
-	<ChatInput />
+	<ChatInput sendMessage={handleSendMessage} />
 </div>

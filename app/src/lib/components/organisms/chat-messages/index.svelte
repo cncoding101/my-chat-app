@@ -1,14 +1,6 @@
-<script lang="ts" module>
-	export type Message = {
-		id: string;
-		chatId: string;
-		role: 'user' | 'assistant';
-		content: string;
-	};
-</script>
-
 <script lang="ts">
-	import { ChatMessage } from '$lib/components/atoms/chat-message';
+	import { ChatMessage } from '@/components/molecules/chat-message';
+	import type { Message } from '@/schemas/api/chat';
 
 	interface Props {
 		messages: Message[];

@@ -9,7 +9,8 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
-			'@/*': './src/lib/*'
+			'@/*': './src/lib/*',
+			'@prisma': './generated/prisma'
 		}
 	}
 };
