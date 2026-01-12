@@ -15,6 +15,9 @@ const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
+	{
+		ignores: ['eslint.config.js']
+	},
 	js.configs.recommended,
 	...ts.configs.recommended,
 	...svelte.configs.recommended,
@@ -63,9 +66,19 @@ export default defineConfig(
 					selector: ['variable', 'typeAlias', 'class']
 				},
 				{
-					format: ['camelCase', 'UPPER_CASE'],
+					format: ['camelCase', 'UPPER_CASE', 'snake_case'],
 					leadingUnderscore: 'allow',
-					selector: 'variable',
+					selector: ['variable', 'parameter', 'method'],
+					trailingUnderscore: 'forbid'
+				},
+				{
+					filter: {
+						match: false,
+						regex: '^[a-zA-Z\\-]*$'
+					},
+					format: ['camelCase', 'UPPER_CASE', 'snake_case'],
+					leadingUnderscore: 'allow',
+					selector: 'property',
 					trailingUnderscore: 'forbid'
 				},
 				{
@@ -75,9 +88,9 @@ export default defineConfig(
 				{
 					filter: {
 						match: false,
-						regex: '^[a-z\\-]*$'
+						regex: '^[a-zA-Z\\-]*$'
 					}, // filter out kebab-case, i.e. allow kebab-case
-					format: ['camelCase', 'PascalCase'],
+					format: ['camelCase', 'PascalCase', 'snake_case'],
 					leadingUnderscore: 'allowSingleOrDouble',
 					selector: 'typeProperty'
 				}
@@ -120,14 +133,7 @@ export default defineConfig(
 		},
 		rules: {
 			'@typescript-eslint/no-unnecessary-condition': 'warn',
-			'@typescript-eslint/strict-boolean-expressions': [
-				'error',
-				{
-					allowNullableObject: false,
-					allowNumber: false,
-					allowString: false
-				}
-			]
+			'@typescript-eslint/strict-boolean-expressions': 'off'
 		}
 	},
 	{

@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import type { RouteOperation, ValidationResult } from '$lib/utils/types';
 
-function formatZodErrors(
+const formatZodErrors = (
 	error: z.ZodError,
 	fieldPrefix: string
-): Array<{ field: string; message: string }> {
+): Array<{ field: string; message: string }> => {
 	return error.issues.map((err) => {
 		const field = err.path.length > 0 ? `${fieldPrefix}.${err.path.join('.')}` : fieldPrefix;
 		return {
@@ -12,46 +12,46 @@ function formatZodErrors(
 			message: err.message
 		};
 	});
-}
+};
 
-function validateRequest(
+const validateRequest = (
 	metadata: RouteOperation,
 	options: {
 		body?: unknown;
 		query?: Record<string, string>;
 		params?: Record<string, string>;
 	}
-): ValidationResult {
+): ValidationResult => {
 	const validatedData: { body?: unknown; query?: unknown; params?: unknown } = {};
 	const allErrors: Array<{ field: string; message: string }> = [];
 
 	// Validate body if schema is provided
-	if (metadata.body && options.body !== undefined) {
+	if (metadata.body != null && options.body !== undefined) {
 		const result = metadata.body.safeParse(options.body);
-		if (!result.success) {
-			allErrors.push(...formatZodErrors(result.error, 'body'));
-		} else {
+		if (result.success) {
 			validatedData.body = result.data;
+		} else {
+			allErrors.push(...formatZodErrors(result.error, 'body'));
 		}
 	}
 
 	// Validate query parameters if schema is provided
-	if (metadata.query && options.query) {
+	if (metadata.query != null && options.query != null) {
 		const result = metadata.query.safeParse(options.query);
-		if (!result.success) {
-			allErrors.push(...formatZodErrors(result.error, 'query'));
-		} else {
+		if (result.success) {
 			validatedData.query = result.data;
+		} else {
+			allErrors.push(...formatZodErrors(result.error, 'query'));
 		}
 	}
 
 	// Validate path parameters if schema is provided
-	if (metadata.params && options.params) {
+	if (metadata.params != null && options.params != null) {
 		const result = metadata.params.safeParse(options.params);
-		if (!result.success) {
-			allErrors.push(...formatZodErrors(result.error, 'params'));
-		} else {
+		if (result.success) {
 			validatedData.params = result.data;
+		} else {
+			allErrors.push(...formatZodErrors(result.error, 'params'));
 		}
 	}
 
@@ -67,7 +67,7 @@ function validateRequest(
 		valid: true,
 		data: validatedData
 	};
-}
+};
 
 /**
  * Validate a response against its schema

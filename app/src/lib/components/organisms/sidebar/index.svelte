@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { Button } from '@/components/atoms/button';
-	import Icon from '@/components/atoms/icon/index.svelte';
+	import { createChat } from '@/api/frontend/chat';
+	import { ButtonIcon } from '@/components/molecules/button-icon';
 	import { LinkIcon } from '@/components/molecules/link-icon';
 	import type { Chat } from '@/schemas/api/chat';
 
@@ -10,14 +11,21 @@
 	}
 
 	let { chats }: Props = $props();
+
+	const handleNewChat = async () => {
+		const newChat = await createChat();
+		goto(`/chat/${newChat.id}`);
+	};
 </script>
 
 <aside class="flex h-full flex-col border-r bg-gray-50">
 	<div class="p-4">
-		<Button href="/chat/new" variant="default" class="w-full justify-start">
-			<Icon variant={{ type: 'outlined', icon: 'add' }} size="1rem" class="mr-2" />
+		<ButtonIcon
+			icon={{ variant: { type: 'outlined', icon: 'add' } }}
+			button={{ variant: 'default', class: 'w-full', onclick: handleNewChat }}
+		>
 			New Chat
-		</Button>
+		</ButtonIcon>
 	</div>
 
 	<nav class="flex-1 overflow-y-auto px-2 py-2">

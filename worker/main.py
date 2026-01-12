@@ -1,7 +1,10 @@
 from fastapi import FastAPI
+from routers.chat import router as chat_router
 
-app = FastAPI()
+app = FastAPI(title="Chat App Worker")
+
+app.include_router(chat_router)
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello, World!"}
+    return {"message": "Chat App Worker API"}

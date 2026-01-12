@@ -40,12 +40,6 @@ export const chatResponseSchema = z.object({
 	messages: z.array(messageResponseSchema).optional()
 }) satisfies z.ZodType<ChatResponse>;
 
-// Request schemas
-export const createChatSchema = z.object({
-	message: z.string().min(1, 'Message cannot be empty')
-});
-export type CreateChatSchema = z.infer<typeof createChatSchema>;
-
 // Response schema
 export const createChatResponseSchema = chatResponseSchema;
 export type CreateChatResponseSchema = z.infer<typeof createChatResponseSchema>;

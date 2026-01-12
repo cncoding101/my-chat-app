@@ -11,4 +11,16 @@ const sendMessage = async (message: string) => {
 	return response.json();
 };
 
-export { sendMessage };
+const createChat = async () => {
+	const response = await fetch('/api/chat', {
+		method: 'POST'
+	});
+
+	if (!response.ok) {
+		throw new Error('Failed to create chat');
+	}
+
+	return response.json();
+};
+
+export { sendMessage, createChat };

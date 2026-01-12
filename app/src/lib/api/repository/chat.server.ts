@@ -1,17 +1,9 @@
 import { prisma } from '@/db/prisma';
-import type { CreateChatSchema } from '@/schemas/api/chat';
 
-const create = async ({ message }: CreateChatSchema) => {
+const create = async () => {
 	try {
 		const chat = await prisma.chat.create({
-			data: {
-				messages: {
-					create: {
-						content: message,
-						role: 'USER'
-					}
-				}
-			}
+			data: {}
 		});
 
 		return chat;
