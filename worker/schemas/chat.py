@@ -6,6 +6,8 @@ class ChatTriggerRequest(BaseModel):
     chat_id: str
     message: str
     callback_url: HttpUrl
+    provider: Optional[str] = "gemini"  # e.g., "gemini", "mock"
+    model: Optional[str] = None         # specific model name
     metadata: Optional[Dict[str, Any]] = None
 
 class ChatCallbackPayload(BaseModel):
