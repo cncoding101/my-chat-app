@@ -6,6 +6,9 @@ import './src/lib/config/sanitizedConfig.server';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
+	ssr: {
+		noExternal: ['@tanstack/svelte-query']
+	},
 	server: {
 		watch: {
 			usePolling: true,

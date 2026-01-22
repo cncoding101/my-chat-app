@@ -100,11 +100,16 @@ const handleApiValidation: Handle = async ({ event, resolve }) => {
 			// Validate the response
 			const validatedResponseData = validateResponse(metadata, responseData);
 
+			const headers = new Headers(response.headers);
+			headers.delete('content-length');
+			headers.delete('content-type');
+			headers.delete('content-encoding');
+
 			// Return a new response with validated data
 			return json(validatedResponseData, {
 				status: response.status,
 				statusText: response.statusText,
-				headers: response.headers
+				headers
 			});
 		} catch (error) {
 			// Log the error and return 500

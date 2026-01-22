@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { create } from '@/api/repository/chat.server';
+import { create } from '@/backend/repository/chat.server';
 
 export default async () => {
 	const chat = await create();

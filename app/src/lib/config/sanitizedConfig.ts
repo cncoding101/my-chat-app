@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { env } from '$lib/schemas';
-import { env as publicEnv } from '$env/dynamic/public';
+import { publicEnv } from '$lib/schemas/env';
+import { env as publicEnvDynamic } from '$env/dynamic/public';
 
 /**
  * Client-safe configuration that can be imported from both client and server code.
@@ -10,7 +10,7 @@ import { env as publicEnv } from '$env/dynamic/public';
  */
 const validatePublicConfig = (): PublicConfig => {
 	try {
-		return env.publicEnv.parse(publicEnv);
+		return publicEnv.parse(publicEnvDynamic);
 	} catch (error) {
 		if (error instanceof z.ZodError) {
 			const errorMessages = error.issues
@@ -27,7 +27,7 @@ const validatePublicConfig = (): PublicConfig => {
 	}
 };
 
-export type PublicConfig = z.infer<typeof env.publicEnv>;
+export type PublicConfig = z.infer<typeof publicEnv>;
 
 const publicConfig = validatePublicConfig();
 export default publicConfig;

@@ -1,9 +1,8 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
-import { env } from '../schemas';
+import { publicEnv } from '../schemas/env';
 
 dotenv.config();
-const { publicEnv } = env;
 const schema = z.object({}).extend(publicEnv.shape);
 const validateConfig = (): Env => {
 	try {

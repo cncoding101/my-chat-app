@@ -1,5 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import type { ChatCallbackPayload } from '@/api/services/worker';
+import type { ChatCallbackPayload } from '@/backend/services/worker';
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {

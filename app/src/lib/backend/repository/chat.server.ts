@@ -44,4 +44,15 @@ const getById = async (id: string) => {
 	}
 };
 
-export { create, getAll, getById };
+const remove = async (id: string) => {
+	try {
+		return await prisma.chat.delete({
+			where: { id }
+		});
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
+
+export { create, getAll, getById, remove };

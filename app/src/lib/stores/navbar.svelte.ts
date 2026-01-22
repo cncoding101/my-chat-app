@@ -1,16 +1,34 @@
+import { userStorage, prefs } from '$lib/storage/user.svelte';
+
 class NavbarStore {
-	isOpen = $state(false);
+	#isInitialized = $state(false);
+	#serverOpen = $state(true);
+
+	get isOpen() {
+		if (!this.#isInitialized) {
+			return this.#serverOpen;
+		}
+		return prefs.sidebar.isOpen;
+	}
+
+	setServerOpen(isOpen: boolean) {
+		this.#serverOpen = isOpen;
+	}
+
+	initialize() {
+		this.#isInitialized = true;
+	}
 
 	toggle() {
-		this.isOpen = !this.isOpen;
+		userStorage.setSidebarOpen(!this.isOpen);
 	}
 
 	open() {
-		this.isOpen = true;
+		userStorage.setSidebarOpen(true);
 	}
 
 	close() {
-		this.isOpen = false;
+		userStorage.setSidebarOpen(false);
 	}
 }
 

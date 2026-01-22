@@ -108,6 +108,22 @@
 				type: 'two-tone';
 				icon: TwoToneVariant;
 		  };
+
+	/**
+	 * Preloads all icons defined in ICONS to avoid loading delays.
+	 * This should be called at the start of the app (e.g., in +layout.svelte).
+	 */
+	export const preloadIcons = async () => {
+		const { loadIcons } = await import('@iconify/svelte');
+		const iconNames = Object.values(ICONS).flatMap((group) => Object.values(group));
+		return new Promise((resolve) => {
+			loadIcons(iconNames, (loaded, missing, pending) => {
+				if (pending.length === 0) {
+					resolve({ loaded, missing });
+				}
+			});
+		});
+	};
 </script>
 
 <script lang="ts">

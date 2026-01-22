@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { sendMessage } from '$lib/api/frontend/chat';
+	// import { sendMessage } from '@/api/chat';
 	import { ChatInput } from '@/components/organisms/chat-input';
 	import { ChatMessages } from '@/components/organisms/chat-messages';
 	import type { Message } from '@/schemas/api/chat';
@@ -9,7 +9,7 @@
 	let messages = $state<Message[]>(initialMessages);
 
 	const handleSendMessage = async (message: string) => {
-		await sendMessage(message);
+		// await sendMessage(message);
 	};
 </script>
 

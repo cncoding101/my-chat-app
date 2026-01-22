@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tv } from 'tailwind-variants';
 	import { Text } from '@/components/atoms/text';
-	import { type Role, RoleEnum } from '@/schemas/api/chat';
+	import { type Role, ROLES } from '@/schemas/api/chat';
 	import { cn } from '@/utils/helpers/shadcn';
 
 	interface Props {
@@ -15,8 +15,8 @@
 		base: 'flex w-full',
 		variants: {
 			role: {
-				[RoleEnum.USER]: 'justify-start',
-				[RoleEnum.ASSISTANT]: 'justify-end'
+				[ROLES.USER]: 'justify-start',
+				[ROLES.ASSISTANT]: 'justify-end'
 			}
 		}
 	});
@@ -25,8 +25,8 @@
 		base: 'p-2 rounded-lg max-w-[80%]',
 		variants: {
 			role: {
-				[RoleEnum.USER]: 'bg-primary text-primary-foreground',
-				[RoleEnum.ASSISTANT]: 'bg-accent text-accent-foreground'
+				[ROLES.USER]: 'bg-primary text-primary-foreground',
+				[ROLES.ASSISTANT]: 'bg-accent text-accent-foreground'
 			}
 		}
 	});

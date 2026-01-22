@@ -1,3 +1,3 @@
-import Root from './index.svelte';
+import Root, { preloadIcons } from './index.svelte';
 
-export { Root as Icon };
+export { Root as Icon, preloadIcons };

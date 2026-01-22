@@ -58,14 +58,6 @@ export default defineConfig(
 			'@typescript-eslint/naming-convention': [
 				'error',
 				{
-					custom: {
-						match: false,
-						regex: 'Repository$'
-					},
-					format: null,
-					selector: ['variable', 'typeAlias', 'class']
-				},
-				{
 					format: ['camelCase', 'UPPER_CASE', 'snake_case'],
 					leadingUnderscore: 'allow',
 					selector: ['variable', 'parameter', 'method'],
