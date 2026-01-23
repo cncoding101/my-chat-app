@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { chat } from '@/backend/business';
-import { removeChatIdParamSchema } from '@/schemas/api/chat';
+import { chatIdParamSchema, removeChatResponseSchema } from '@/schemas/api';
 import type { RouteMetadata } from '@/utils/types';
 import type { MetaRequestHandler } from '@/utils/types/routeRequestHandler';
 
@@ -9,7 +9,8 @@ export const _meta = {
 		{
 			method: 'DELETE',
 			description: 'Delete a existing chat by id',
-			params: removeChatIdParamSchema
+			params: chatIdParamSchema,
+			response: removeChatResponseSchema
 		}
 	]
 } as const satisfies RouteMetadata;

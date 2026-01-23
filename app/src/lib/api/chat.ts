@@ -1,3 +1,5 @@
+import type { ChatIdParamSchema } from '@/schemas/api';
+
 const API_ENDPOINT = '/api/chat';
 
 const create = async () => {
@@ -12,7 +14,7 @@ const create = async () => {
 	return await response.json();
 };
 
-const remove = async ({ id }: { id: string }) => {
+const remove = async ({ id }: ChatIdParamSchema) => {
 	const response = await fetch(`${API_ENDPOINT}/${id}`, {
 		method: 'DELETE'
 	});

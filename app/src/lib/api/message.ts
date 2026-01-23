@@ -1,10 +1,13 @@
-const API_ENDPOINT = ({ id }: { id: string }) => {
+import type { ChatIdParamSchema, MessageRequest } from '@/schemas/api';
+
+const API_ENDPOINT = (id: string) => {
 	return `/api/chat/${id}/message`;
 };
 
-const create = async ({ chatId }: { chatId: string }) => {
-	const response = await fetch(API_ENDPOINT({ id: chatId }), {
-		method: 'POST'
+const create = async ({ id }: ChatIdParamSchema, payload: MessageRequest) => {
+	const response = await fetch(API_ENDPOINT(id), {
+		method: 'POST',
+		body: JSON.stringify(payload)
 	});
 
 	if (!response.ok) {

@@ -1,16 +1,29 @@
 <script lang="ts">
 	// import { sendMessage } from '@/api/chat';
+	import { createMutation } from '@tanstack/svelte-query';
+	import { create } from '@/api/message';
 	import { ChatInput } from '@/components/organisms/chat-input';
 	import { ChatMessages } from '@/components/organisms/chat-messages';
-	import type { Message } from '@/schemas/api/chat';
+	import type { Message, MessageRequest } from '@/schemas/api';
 
-	let { initialMessages = [] }: { initialMessages?: Message[] } = $props();
+	interface Props {
+		initialMessages?: Message[];
+		chatId: string;
+	}
+
+	let { initialMessages = [], chatId }: Props = $props();
 
 	let messages = $state<Message[]>(initialMessages);
 
-	const handleSendMessage = async (message: string) => {
-		// await sendMessage(message);
-	};
+	const mutatation = createMutation(() => ({
+		mutationFn: (payload: MessageRequest) => create({ id: chatId }, payload),
+		onSuccess: (newMessage: Message) => {
+			messages.push(newMessage);
+		},
+		onError: (error) => {
+			throw error;
+		}
+	}));
 </script>
 
 <div class="grid h-full grid-rows-[1fr_auto]">
@@ -18,5 +31,5 @@
 		<ChatMessages {messages} />
 	</div>
 
-	<ChatInput sendMessage={handleSendMessage} />
+	<ChatInput sendMessage={(message: string) => mutatation.mutate({ content: message })} />
 </div>

@@ -5,7 +5,7 @@
 	import { create, remove } from '@/api/chat';
 	import { ButtonIcon } from '@/components/molecules/button-icon';
 	import { LinkIcon } from '@/components/molecules/link-icon';
-	import type { Chat, RemoveChatIdParamSchema } from '@/schemas/api/chat';
+	import type { Chat, ChatIdParamSchema } from '@/schemas/api/chat';
 
 	interface Props {
 		chats: Chat[];
@@ -26,7 +26,7 @@
 	}));
 
 	const deleteMutation = createMutation(() => ({
-		mutationFn: ({ id }: RemoveChatIdParamSchema) => remove({ id }),
+		mutationFn: (chatId: ChatIdParamSchema) => remove(chatId),
 		onSuccess: async (_, params) => {
 			await invalidateAll();
 

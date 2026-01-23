@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ChatMessage } from '@/components/molecules/chat-message';
-	import type { Message } from '@/schemas/api/chat';
+	import type { Message } from '@/schemas/api';
 
 	interface Props {
 		messages: Message[];

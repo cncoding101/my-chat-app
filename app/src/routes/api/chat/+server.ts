@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { chat } from '@/backend/business';
-import { createChatResponseSchema } from '@/schemas/api/chat';
+import { createChatResponseSchema } from '@/schemas/api';
 import type { RouteMetadata } from '@/utils/types';
 import type { MetaRequestHandler } from '@/utils/types/routeRequestHandler';
 

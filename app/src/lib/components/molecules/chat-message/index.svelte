@@ -16,7 +16,8 @@
 		variants: {
 			role: {
 				[ROLES.USER]: 'justify-start',
-				[ROLES.ASSISTANT]: 'justify-end'
+				[ROLES.ASSISTANT]: 'justify-end',
+				[ROLES.TOOL]: 'justify-end'
 			}
 		}
 	});
@@ -25,8 +26,9 @@
 		base: 'p-2 rounded-lg max-w-[80%]',
 		variants: {
 			role: {
-				[ROLES.USER]: 'bg-primary text-primary-foreground',
-				[ROLES.ASSISTANT]: 'bg-accent text-accent-foreground'
+				[ROLES.USER]: 'bg-primary text-primary-content',
+				[ROLES.ASSISTANT]: 'bg-accent text-accent-content',
+				[ROLES.TOOL]: 'bg-accent text-accent-content'
 			}
 		}
 	});

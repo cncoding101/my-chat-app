@@ -1,5 +1,5 @@
 import { unreachable } from '$lib/utils/helpers/unreachable';
-import { getAll, getById } from '@/backend/repository/chat.server';
+import { chatRepository } from '@/backend/repository';
 import type { Chat, ChatWithMessages } from '@/schemas/api/chat';
 
 type FetchOptions =
@@ -17,9 +17,9 @@ async function fetch(options: { type: 'BY_ID'; id: string }): Promise<ChatWithMe
 async function fetch(options: FetchOptions) {
 	switch (options.type) {
 		case 'ALL':
-			return await getAll();
+			return await chatRepository.getAll();
 		case 'BY_ID': {
-			const chat = await getById(options.id);
+			const chat = await chatRepository.getById(options.id);
 
 			if (chat == null) {
 				return null;

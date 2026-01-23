@@ -4,4 +4,8 @@
 	let { data } = $props();
 </script>
 
-<Chat initialMessages={data.chat.messages} />
+{#if data.chat}
+	<Chat initialMessages={data.chat.messages} chatId={data.chat.id} />
+{:else}
+	<p>Chat not found</p>
+{/if}

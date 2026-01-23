@@ -1,38 +1,23 @@
-import type {
-	Role as PrismaRole,
-	Chat as PrismaChat,
-	Message as PrismaMessage
-} from '@prisma/client';
+import type { Chat as PrismaChat } from '@prisma/client';
 import { z } from 'zod';
+import { messageResponseSchema, type MessageResponse } from '.';
 
+// to avoid import issues with prisma enums as they are performed at runtime
 const ROLES = {
 	ASSISTANT: 'ASSISTANT',
-	USER: 'USER'
+	USER: 'USER',
+	TOOL: 'TOOL'
 } as const;
 
-type Role = Exclude<PrismaRole, 'TOOL'>;
+type Role = (typeof ROLES)[keyof typeof ROLES];
 type Chat = PrismaChat;
 type ChatWithMessages = Chat & {
 	messages: MessageResponse[];
 };
 
-// Response types - Pick only required fields from Prisma models
-type MessageResponse = Pick<PrismaMessage, 'id' | 'content'> & {
-	role: Role;
-};
-
 type ChatResponse = Pick<Chat, 'id' | 'title'> & {
 	messages?: MessageResponse[];
 };
-
-// Zod schemas that match Prisma types (satisfies ensures type safety)
-const messageResponseSchema = z.object({
-	id: z.string(),
-	content: z.string(),
-	role: z.custom<Role>()
-}) satisfies z.ZodType<MessageResponse>;
-
-type Message = z.infer<typeof messageResponseSchema>;
 
 const chatResponseSchema = z.object({
 	id: z.string(),
@@ -44,25 +29,29 @@ const chatResponseSchema = z.object({
 const createChatResponseSchema = chatResponseSchema;
 type CreateChatResponseSchema = z.infer<typeof createChatResponseSchema>;
 
-const removeChatIdParamSchema = z.object({
+const chatIdParamSchema = z.object({
 	id: z.string()
 });
-type RemoveChatIdParamSchema = z.infer<typeof removeChatIdParamSchema>;
+type ChatIdParamSchema = z.infer<typeof chatIdParamSchema>;
+
+const removeChatResponseSchema = z.object({
+	success: z.boolean()
+});
+type RemoveChatReponseSchema = z.infer<typeof removeChatResponseSchema>;
 
 export {
 	ROLES,
-	messageResponseSchema,
 	chatResponseSchema,
 	createChatResponseSchema,
-	removeChatIdParamSchema
+	chatIdParamSchema,
+	removeChatResponseSchema
 };
 export type {
 	Role,
 	Chat,
 	ChatWithMessages,
-	MessageResponse,
 	ChatResponse,
-	Message,
 	CreateChatResponseSchema,
-	RemoveChatIdParamSchema
+	ChatIdParamSchema,
+	RemoveChatReponseSchema
 };
