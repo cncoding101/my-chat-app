@@ -1,19 +1,23 @@
+from typing import Any
+
 from pydantic import BaseModel, HttpUrl
-from typing import Optional, Dict, Any
+
 
 class ChatTriggerRequest(BaseModel):
     """Payload sent from App to Worker to trigger an LLM task."""
+
     chat_id: str
     message: str
     callback_url: HttpUrl
-    provider: Optional[str] = "gemini"  # e.g., "gemini", "mock"
-    model: Optional[str] = None         # specific model name
-    metadata: Optional[Dict[str, Any]] = None
+    provider: str | None = "gemini"  # e.g., "gemini", "mock"
+    model: str | None = None  # specific model name
+    metadata: dict[str, Any] | None = None
+
 
 class ChatCallbackPayload(BaseModel):
     """Payload sent from Worker back to App when task is complete."""
-    chat_id: str
+
+    chatId: str  # noqa: N815
     response: str
     status: str = "completed"
-    error: Optional[str] = None
-
+    error: str | None = None
