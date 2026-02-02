@@ -1,4 +1,4 @@
-import * as chat from './chat';
-import * as message from './message';
+import * as chat from './chats';
+import * as message from './messages';
 
 export { chat, message };

@@ -34,6 +34,12 @@ const chatIdParamSchema = z.object({
 });
 type ChatIdParamSchema = z.infer<typeof chatIdParamSchema>;
 
+const chatAndMessageIdParamSchema = z.object({
+	id: z.string(),
+	messageId: z.string()
+});
+type ChatAndMessageIdParamSchema = z.infer<typeof chatAndMessageIdParamSchema>;
+
 const removeChatResponseSchema = z.object({
 	success: z.boolean()
 });
@@ -44,6 +50,7 @@ export {
 	chatResponseSchema,
 	createChatResponseSchema,
 	chatIdParamSchema,
+	chatAndMessageIdParamSchema,
 	removeChatResponseSchema
 };
 export type {
@@ -53,5 +60,6 @@ export type {
 	ChatResponse,
 	CreateChatResponseSchema,
 	ChatIdParamSchema,
+	ChatAndMessageIdParamSchema,
 	RemoveChatReponseSchema
 };

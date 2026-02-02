@@ -7,6 +7,7 @@ import ENVIRONMENT from '../../utils/constants/environment';
  */
 export const publicEnv = z.object({
 	PUBLIC_APP_NAME: z.string().default('my-chat-app'),
+	PUBLIC_APP_URL: z.string().default('http://localhost:5173'),
 
 	// Environment
 	PUBLIC_ENVIRONMENT: z

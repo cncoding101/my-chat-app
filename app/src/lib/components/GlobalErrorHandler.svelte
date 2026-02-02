@@ -11,7 +11,6 @@
 
 			Swal.fire({
 				icon: 'error',
-				title: 'Application Error',
 				text: message,
 				confirmButtonText: 'OK',
 				heightAuto: false

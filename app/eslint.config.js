@@ -74,7 +74,7 @@ export default defineConfig(
 					trailingUnderscore: 'forbid'
 				},
 				{
-					format: ['PascalCase'],
+					format: ['PascalCase', 'camelCase'],
 					selector: 'typeLike'
 				},
 				{

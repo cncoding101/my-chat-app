@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { chatRepository } from '@/backend/repository';
+import { chatRepository } from '@/backend/repositories';
 import type { ChatIdParamSchema, RemoveChatReponseSchema } from '@/schemas/api';
 
 export default async ({ id }: ChatIdParamSchema): Promise<RemoveChatReponseSchema> => {

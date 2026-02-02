@@ -2,7 +2,7 @@
 	import { createMutation } from '@tanstack/svelte-query';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
-	import { create, remove } from '@/api/chat';
+	import { create, remove } from '@/api/chats';
 	import { ButtonIcon } from '@/components/molecules/button-icon';
 	import { LinkIcon } from '@/components/molecules/link-icon';
 	import type { Chat, ChatIdParamSchema } from '@/schemas/api/chat';
@@ -18,7 +18,7 @@
 		onSuccess: async (newChat: Chat) => {
 			await invalidateAll();
 
-			goto(`/chat/${newChat.id}`);
+			goto(`/chats/${newChat.id}`);
 		},
 		onError: (error) => {
 			throw error;
@@ -30,7 +30,7 @@
 		onSuccess: async (_, params) => {
 			await invalidateAll();
 
-			if (page.url.pathname === `/chat/${params.id}`) {
+			if (page.url.pathname === `/chats/${params.id}`) {
 				goto('/');
 			}
 		},
@@ -63,11 +63,11 @@
 			{:else}
 				{#each chats as chat (chat.id)}
 					<div
-						class:bg-gray-200={page.url.pathname === `/chat/${chat.id}`}
+						class:bg-gray-200={page.url.pathname === `/chats/${chat.id}`}
 						class="flex justify-between transition-colors hover:bg-gray-200"
 					>
 						<LinkIcon
-							href="/chat/{chat.id}"
+							href="/chats/{chat.id}"
 							icon={{ type: 'outlined', icon: 'chat' }}
 							class="flex-1"
 						>

@@ -1,6 +1,6 @@
 import type { ChatIdParamSchema } from '@/schemas/api';
 
-const API_ENDPOINT = '/api/chat';
+const API_ENDPOINT = '/api/chats';
 
 const create = async () => {
 	const response = await fetch(API_ENDPOINT, {
@@ -20,7 +20,7 @@ const remove = async ({ id }: ChatIdParamSchema) => {
 	});
 
 	if (!response.ok) {
-		throw new Error('Failed to remove chat');
+		throw new Error('Failed to remove chat, please try again.');
 	}
 
 	return await response.json();

@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
-import * as chatBusiness from '$lib/backend/business/chat';
 import type { PageServerLoad } from './$types';
+import * as chatBusiness from '@/backend/business/chats';
 
 export const load: PageServerLoad = async ({ params }) => {
 	try {

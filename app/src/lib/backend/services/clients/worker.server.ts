@@ -10,11 +10,15 @@ export type ChatCallbackPayloadError = string | null;
  * Payload sent from Worker back to App when task is complete.
  */
 export interface ChatCallbackPayload {
-	chat_id: string;
+	chatId: string;
 	response: string;
 	status?: string;
 	error?: ChatCallbackPayloadError;
 }
+
+export type ChatTriggerRequestProvider = string | null;
+
+export type ChatTriggerRequestModel = string | null;
 
 export type ChatTriggerRequestMetadataAnyOf = { [key: string]: unknown };
 
@@ -31,6 +35,8 @@ export interface ChatTriggerRequest {
 	 * @maxLength 2083
 	 */
 	callback_url: string;
+	provider?: ChatTriggerRequestProvider;
+	model?: ChatTriggerRequestModel;
 	metadata?: ChatTriggerRequestMetadata;
 }
 
@@ -50,36 +56,34 @@ export interface ValidationError {
  * Endpoint for the App to trigger a new LLM task.
  * @summary Trigger Chat
  */
-export type triggerChatChatTriggerPostResponse200 = {
+export type triggerChatResponse200 = {
 	data: unknown;
 	status: 200;
 };
 
-export type triggerChatChatTriggerPostResponse422 = {
+export type triggerChatResponse422 = {
 	data: HTTPValidationError;
 	status: 422;
 };
 
-export type triggerChatChatTriggerPostResponseSuccess = triggerChatChatTriggerPostResponse200 & {
+export type triggerChatResponseSuccess = triggerChatResponse200 & {
 	headers: Headers;
 };
-export type triggerChatChatTriggerPostResponseError = triggerChatChatTriggerPostResponse422 & {
+export type triggerChatResponseError = triggerChatResponse422 & {
 	headers: Headers;
 };
 
-export type triggerChatChatTriggerPostResponse =
-	| triggerChatChatTriggerPostResponseSuccess
-	| triggerChatChatTriggerPostResponseError;
+export type triggerChatResponse = triggerChatResponseSuccess | triggerChatResponseError;
 
-export const getTriggerChatChatTriggerPostUrl = () => {
-	return `http://localhost:8000/chat/trigger`;
+export const getTriggerChatUrl = () => {
+	return `http://localhost:8000/chats/trigger`;
 };
 
-export const triggerChatChatTriggerPost = async (
+export const triggerChat = async (
 	chatTriggerRequest: ChatTriggerRequest,
 	options?: RequestInit
-): Promise<triggerChatChatTriggerPostResponse> => {
-	const res = await fetch(getTriggerChatChatTriggerPostUrl(), {
+): Promise<triggerChatResponse> => {
+	const res = await fetch(getTriggerChatUrl(), {
 		...options,
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -88,46 +92,44 @@ export const triggerChatChatTriggerPost = async (
 
 	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: triggerChatChatTriggerPostResponse['data'] = body ? JSON.parse(body) : {};
-	return { data, status: res.status, headers: res.headers } as triggerChatChatTriggerPostResponse;
+	const data: triggerChatResponse['data'] = body ? JSON.parse(body) : {};
+	return { data, status: res.status, headers: res.headers } as triggerChatResponse;
 };
 
 /**
  * Endpoint used ONLY for generating the callback payload type in the frontend SDK.
  * @summary Callback Schema Discovery
  */
-export type callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponse200 = {
+export type callbackSchemaDiscoveryResponse200 = {
 	data: unknown;
 	status: 200;
 };
 
-export type callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponse422 = {
+export type callbackSchemaDiscoveryResponse422 = {
 	data: HTTPValidationError;
 	status: 422;
 };
 
-export type callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponseSuccess =
-	callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponse200 & {
-		headers: Headers;
-	};
-export type callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponseError =
-	callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponse422 & {
-		headers: Headers;
-	};
-
-export type callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponse =
-	| callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponseSuccess
-	| callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponseError;
-
-export const getCallbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostUrl = () => {
-	return `http://localhost:8000/chat/callback-schema-discovery`;
+export type callbackSchemaDiscoveryResponseSuccess = callbackSchemaDiscoveryResponse200 & {
+	headers: Headers;
+};
+export type callbackSchemaDiscoveryResponseError = callbackSchemaDiscoveryResponse422 & {
+	headers: Headers;
 };
 
-export const callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPost = async (
+export type callbackSchemaDiscoveryResponse =
+	| callbackSchemaDiscoveryResponseSuccess
+	| callbackSchemaDiscoveryResponseError;
+
+export const getCallbackSchemaDiscoveryUrl = () => {
+	return `http://localhost:8000/chats/callback-schema-discovery`;
+};
+
+export const callbackSchemaDiscovery = async (
 	chatCallbackPayload: ChatCallbackPayload,
 	options?: RequestInit
-): Promise<callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponse> => {
-	const res = await fetch(getCallbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostUrl(), {
+): Promise<callbackSchemaDiscoveryResponse> => {
+	const res = await fetch(getCallbackSchemaDiscoveryUrl(), {
 		...options,
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -136,14 +138,8 @@ export const callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPost = async (
 
 	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-	const data: callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponse['data'] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers
-	} as callbackSchemaDiscoveryChatCallbackSchemaDiscoveryPostResponse;
+	const data: callbackSchemaDiscoveryResponse['data'] = body ? JSON.parse(body) : {};
+	return { data, status: res.status, headers: res.headers } as callbackSchemaDiscoveryResponse;
 };
 
 /**

@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "npm run check && NODE_OPTIONS='--inspect=0.0.0.0:9229' vite dev",
+		"dev": "npm run check & NODE_OPTIONS='--inspect=0.0.0.0:9229' vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -16,7 +16,7 @@
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
 		"bootstrap:db": "prisma migrate dev && prisma generate",
-		"generate:worker-sdk": "orval"
+		"generate:worker": "orval"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
@@ -61,6 +61,7 @@
 	"dependencies": {
 		"@prisma/adapter-pg": "^7.2.0",
 		"@tanstack/svelte-query": "^6.0.16",
+		"consola": "^3.4.2",
 		"dotenv": "^17.2.3",
 		"pg": "^8.16.3",
 		"sweetalert2": "^11.26.17",

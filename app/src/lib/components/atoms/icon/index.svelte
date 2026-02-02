@@ -25,7 +25,8 @@
 			attach: 'ic:outline-attach-file',
 			awesome: 'ic:outline-auto-awesome',
 			add: 'ic:outline-add',
-			chat: 'ic:outline-chat-bubble-outline'
+			chat: 'ic:outline-chat-bubble-outline',
+			error: 'ic:outline-error'
 		},
 		filled: {
 			download: 'ic:baseline-file-download',

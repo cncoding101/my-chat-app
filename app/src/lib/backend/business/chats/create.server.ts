@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { chatRepository } from '@/backend/repository';
+import { chatRepository } from '@/backend/repositories';
 import type { CreateChatResponseSchema } from '@/schemas/api';
 
 export default async (): Promise<CreateChatResponseSchema> => {

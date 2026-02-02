@@ -1,6 +1,7 @@
 import { json, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { routeRegistry, validateRequest, validateResponse } from '$lib/utils/helpers/api';
+import '$lib/utils/logger';
 
 // const whitelistedDomains = [];
 

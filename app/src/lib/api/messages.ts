@@ -1,7 +1,7 @@
 import type { ChatIdParamSchema, MessageRequest } from '@/schemas/api';
 
 const API_ENDPOINT = (id: string) => {
-	return `/api/chat/${id}/message`;
+	return `/api/chats/${id}/messages`;
 };
 
 const create = async ({ id }: ChatIdParamSchema, payload: MessageRequest) => {
@@ -11,7 +11,7 @@ const create = async ({ id }: ChatIdParamSchema, payload: MessageRequest) => {
 	});
 
 	if (!response.ok) {
-		throw new Error('Failed to create message');
+		throw new Error('Failed to process the message, please try again.');
 	}
 
 	return await response.json();

@@ -1,5 +1,5 @@
 import { unreachable } from '$lib/utils/helpers/unreachable';
-import { chatRepository } from '@/backend/repository';
+import { chatRepository } from '@/backend/repositories';
 import type { Chat, ChatWithMessages } from '@/schemas/api/chat';
 
 type FetchOptions =

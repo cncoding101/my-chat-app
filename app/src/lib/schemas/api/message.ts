@@ -18,7 +18,14 @@ const messageResponseSchema = z.object({
 	role: z.custom<Role>()
 }) satisfies z.ZodType<MessageResponse>;
 
+const chatCallbackPayloadSchema = z.object({
+	chatId: z.string(),
+	response: z.string(),
+	status: z.string().optional(),
+	error: z.string().nullable().optional()
+});
+
 type Message = z.infer<typeof messageResponseSchema>;
 
-export { messageResponseSchema, messageRequestSchema };
+export { messageResponseSchema, messageRequestSchema, chatCallbackPayloadSchema };
 export type { MessageResponse, Message, MessageRequest };
