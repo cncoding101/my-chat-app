@@ -24,7 +24,7 @@ export const POST: MetaRequestHandler<typeof _meta, 'POST'> = async ({ request, 
 			payload
 		);
 
-		const response = await message.callback(params.id, params.messageId, payload);
+		const response = await message.callback(params.id, payload);
 
 		return json(response);
 	} catch (err) {

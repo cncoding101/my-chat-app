@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import { LoadingSpinner } from '@/components/atoms/loading-spinner';
+	import { Text } from '@/components/atoms/text';
 
 	interface Props {
 		title?: string;
@@ -15,6 +16,6 @@
 >
 	<div class="flex flex-col items-center gap-4">
 		<LoadingSpinner class="text-primary size-12" />
-		<p class="text-primary animate-pulse text-sm font-medium">{title}</p>
+		<Text variant="label" class="text-primary animate-pulse">{title}</Text>
 	</div>
 </div>

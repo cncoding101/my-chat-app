@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Icon } from '@/components/atoms/icon';
+	import { Text } from '@/components/atoms/text';
 	import { ChatMessage } from '@/components/molecules/chat-message';
 	import type { Message } from '@/schemas/api';
 
@@ -29,18 +30,16 @@
 					></span>
 					<span class="bg-primary h-2 w-2 animate-bounce rounded-full"></span>
 				</div>
-				<span class="text-sm">AI is thinking...</span>
+				<Text variant="label" class="text-muted-foreground font-normal">AI is thinking...</Text>
 			</div>
 		</li>
 	{/if}
 
 	{#if errorMessage}
 		<li class="m-2">
-			<div
-				class="border-destructive/50 bg-destructive/10 text-destructive flex items-center gap-2 rounded-md border p-3"
-			>
-				<Icon variant={{ type: 'outlined', icon: 'error' }} size="1.25rem" class="shrink-0" />
-				<span class="text-sm">{errorMessage}</span>
+			<div class="bg-error/10 text-error flex items-center gap-2 rounded-md border p-3">
+				<Icon variant={{ type: 'outlined', icon: 'error' }} class="shrink-0" />
+				<Text variant="label" class="font-normal">{errorMessage}</Text>
 			</div>
 		</li>
 	{/if}

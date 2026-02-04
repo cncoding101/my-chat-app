@@ -29,15 +29,16 @@
 	};
 </script>
 
-<div class="flex flex-row rounded-sm border p-2">
+<div class="border-neutral-content/20 flex w-[80%] flex-row rounded-4xl border">
 	<Textarea
 		variant="chat"
 		bind:value={message}
 		style={`min-height: ${height.min}rem; max-height: ${height.max}rem;`}
+		class="p-6"
 		onkeydown={handleKeydown}
 	/>
 
 	<div class="flex items-center">
-		<ChatInputControls onSend={handleSend} />
+		<ChatInputControls />
 	</div>
 </div>

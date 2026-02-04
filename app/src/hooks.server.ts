@@ -52,9 +52,7 @@ const handleApiValidation: Handle = async ({ event, resolve }) => {
 		event.url.searchParams.forEach((value, key) => {
 			query[key] = value;
 		});
-		if (Object.keys(query).length > 0) {
-			validationOptions.query = query;
-		}
+		validationOptions.query = query;
 	}
 
 	if (metadata.params != null && Object.keys(event.params).length > 0) {

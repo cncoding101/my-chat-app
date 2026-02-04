@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Text } from '@/components/atoms/text';
 	import { Chat } from '@/components/organisms/chat';
 
 	let { data } = $props();
@@ -7,5 +8,5 @@
 {#if data.chat}
 	<Chat initialMessages={data.chat.messages} chatId={data.chat.id} />
 {:else}
-	<p>Chat not found</p>
+	<Text variant="paragraph">Chat not found</Text>
 {/if}

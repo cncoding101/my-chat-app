@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createMutation } from '@tanstack/svelte-query';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { fly } from 'svelte/transition';
+	import { goto, invalidate } from '$app/navigation';
 	import { page } from '$app/state';
 	import { create, remove } from '@/api/chats';
 	import { ButtonIcon } from '@/components/molecules/button-icon';
@@ -16,7 +17,7 @@
 	const mutation = createMutation(() => ({
 		mutationFn: create,
 		onSuccess: async (newChat: Chat) => {
-			await invalidateAll();
+			await invalidate('app:chats');
 
 			goto(`/chats/${newChat.id}`);
 		},
@@ -28,7 +29,7 @@
 	const deleteMutation = createMutation(() => ({
 		mutationFn: (chatId: ChatIdParamSchema) => remove(chatId),
 		onSuccess: async (_, params) => {
-			await invalidateAll();
+			await invalidate('app:chats');
 
 			if (page.url.pathname === `/chats/${params.id}`) {
 				goto('/');
@@ -40,7 +41,7 @@
 	}));
 </script>
 
-<aside class="bg-neutral flex h-full flex-col border-r">
+<aside class="bg-neutral flex h-full flex-col">
 	<div class="p-4">
 		<ButtonIcon
 			icon={{ variant: { type: 'outlined', icon: 'add' } }}
@@ -61,8 +62,9 @@
 			{#if chats.length === 0}
 				<div class="px-2 py-4 text-center text-sm">No chats yet</div>
 			{:else}
-				{#each chats as chat (chat.id)}
+				{#each chats as chat, i (chat.id)}
 					<div
+						in:fly={{ x: -20, duration: 200, delay: i * 50 }}
 						class:bg-gray-200={page.url.pathname === `/chats/${chat.id}`}
 						class="flex justify-between transition-colors hover:bg-gray-200"
 					>

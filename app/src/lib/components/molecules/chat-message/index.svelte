@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fly } from 'svelte/transition';
 	import { tv } from 'tailwind-variants';
 	import { Text } from '@/components/atoms/text';
 	import { type Role, ROLES } from '@/schemas/api/chat';
@@ -27,14 +28,14 @@
 		variants: {
 			role: {
 				[ROLES.USER]: 'bg-primary text-primary-content',
-				[ROLES.ASSISTANT]: 'bg-accent text-accent-content',
+				[ROLES.ASSISTANT]: 'bg-secondary text-secondary-content',
 				[ROLES.TOOL]: 'bg-accent text-accent-content'
 			}
 		}
 	});
 </script>
 
-<div class={containerVariants({ role })}>
+<div in:fly={{ y: 10, duration: 200 }} class={containerVariants({ role })}>
 	<div class={cn(messageVariants({ role }))}>
 		<Text variant="paragraph">{message}</Text>
 	</div>

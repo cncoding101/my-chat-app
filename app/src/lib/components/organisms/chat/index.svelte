@@ -58,5 +58,7 @@
 		<ChatMessages {messages} {isPending} {errorMessage} />
 	</div>
 
-	<ChatInput sendMessage={(message: string) => mutation.mutate({ content: message })} />
+	<div class="flex justify-center">
+		<ChatInput sendMessage={(message: string) => mutation.mutate({ content: message })} />
+	</div>
 </div>
