@@ -47,8 +47,10 @@ export const Chat = ({ initialMessages = [], chatId }: ChatProps) => {
 
   return (
     <div className="grid h-full grid-rows-[1fr_auto]">
-      <div className="overflow-y-auto">
-        <ChatMessages messages={messages} isPending={isPending} errorMessage={errorMessage} />
+      <div className="relative">
+        <div className="absolute inset-0 overflow-y-auto">
+          <ChatMessages messages={messages} isPending={isPending} errorMessage={errorMessage} />
+        </div>
       </div>
       <div className="flex justify-center">
         <ChatInput sendMessage={(message: string) => mutation.mutate(message)} />
