@@ -30,3 +30,13 @@ model Message {
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId    String
 }
+
+model Document {
+  id         String   @id
+  filename   String
+  type       String
+  status     String   @default("completed")
+  chunkCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

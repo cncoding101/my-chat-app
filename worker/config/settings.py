@@ -1,6 +1,6 @@
 from typing import ClassVar
 
-from pydantic_settings import (  # pyright: ignore[reportMissingImports]
+from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict,
 )
@@ -8,7 +8,7 @@ from pydantic_settings import (  # pyright: ignore[reportMissingImports]
 from config.constants import Environment
 
 
-class Settings(BaseSettings):  # pyright: ignore[reportUntypedBaseClass]
+class Settings(BaseSettings):
     """
     Application settings loaded from environment variables.
 
@@ -29,9 +29,18 @@ class Settings(BaseSettings):  # pyright: ignore[reportUntypedBaseClass]
 
     # LLM settings
     GOOGLE_API_KEY: str
+    LLM_MODEL: str = "gemini-2.0-flash-lite"
+    LLM_MAX_OUTPUT_TOKENS: int = 1024
 
     # HTTP client settings
     CALLBACK_TIMEOUT: int = 30
+
+    # Qdrant settings
+    QDRANT_URL: str = "http://localhost:6333"
+    QDRANT_COLLECTION: str = "documents"
+
+    # Embedding settings
+    EMBEDDING_MODEL: str = "gemini-embedding-001"
 
     @property
     def is_development(self) -> bool:

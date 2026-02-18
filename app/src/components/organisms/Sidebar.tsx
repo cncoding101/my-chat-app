@@ -93,6 +93,16 @@ export const Sidebar = ({ chats }: SidebarProps) => {
           )}
         </div>
       </nav>
+
+      <div className="border-t border-gray-200 p-2">
+        <LinkIcon
+          to="/documents"
+          icon={{ type: 'outlined', icon: 'library' }}
+          className={`w-full ${location.pathname === '/documents' ? 'bg-gray-200' : ''}`}
+        >
+          Knowledge Base
+        </LinkIcon>
+      </div>
     </aside>
   );
 };

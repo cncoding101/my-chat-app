@@ -64,11 +64,7 @@ export type triggerChatChatTriggerPostResponseError = (triggerChatChatTriggerPos
 export type triggerChatChatTriggerPostResponse = (triggerChatChatTriggerPostResponseSuccess | triggerChatChatTriggerPostResponseError)
 
 export const getTriggerChatChatTriggerPostUrl = () => {
-
-
-  
-
-  return `http://localhost:8000/chat/trigger`
+  return `http://localhost:8000/chats/trigger`
 }
 
 export const triggerChatChatTriggerPost = async (chatTriggerRequest: ChatTriggerRequest, options?: RequestInit): Promise<triggerChatChatTriggerPostResponse> => {

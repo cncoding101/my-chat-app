@@ -9,6 +9,7 @@ import { GlobalErrorHandler } from '@/components/GlobalErrorHandler';
 import { Sidebar } from '@/components/organisms/Sidebar';
 import { HomePage } from '@/pages/HomePage';
 import { ChatPage } from '@/pages/ChatPage';
+import { DocumentsPage } from '@/pages/DocumentsPage';
 import { useNavbarStore } from '@/stores/navbar';
 
 const Layout = () => {
@@ -68,6 +69,7 @@ export const App = () => {
         <Route element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="chats/:id" element={<ChatPage />} />
+          <Route path="documents" element={<DocumentsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

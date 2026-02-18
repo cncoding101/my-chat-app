@@ -12,7 +12,7 @@ from config.constants import Environment
 from config.settings import Settings
 
 try:
-    settings = Settings()
+    settings = Settings()  # pyright: ignore[reportCallIssue]
 except ValidationError as e:
     errors: list[str] = []
     for error in e.errors():

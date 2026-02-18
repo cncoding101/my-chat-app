@@ -12,6 +12,10 @@ dependencies = [
     "pydantic-settings>=2.7.0",
     "python-dotenv>=1.0.0",
     "typing-extensions>=4.15.0",
+    "qdrant-client>=1.12.0",
+    "pymupdf>=1.25.0",
+    "beautifulsoup4>=4.13.0",
+    "python-multipart>=0.0.20",
 ]
 
 [tool.poe.tasks]
@@ -54,7 +58,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["business", "config", "controllers", "routers", "schemas", "services"]
+known-first-party = ["business", "config", "controllers", "routers", "schemas", "services", "tools"]
 
 [tool.basedpyright]
 typeCheckingMode = "recommended"
@@ -62,7 +66,7 @@ pythonVersion = "3.11"
 include = ["."]
 exclude = ["**/__pycache__", "**/myenv", "**/.venv", "**/venv"]
 venvPath = "."
-venv = "myenv"
+venv = ".venv"
 reportUnusedVariable = "warning"
 reportUnusedImport = "warning"
 reportMissingTypeStubs = false
