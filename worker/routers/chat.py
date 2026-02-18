@@ -1,19 +1,38 @@
-from fastapi import APIRouter, BackgroundTasks
+from typing import Annotated
 
-from controllers.chat_controller import ChatController
-from schemas.chat import ChatCallbackPayload, ChatTriggerRequest
+import httpx
+from fastapi import APIRouter, BackgroundTasks, Depends
+
+from controllers.chat_controller import chat_task_orchestrator
+from dependencies import get_http_client
+from schemas.chat import ChatCallbackPayload, ChatTriggerRequest, ChatTriggerResponse
 
 router = APIRouter(prefix="/chats", tags=["chats"])
 
-@router.post("/trigger", operation_id="triggerChat")
-async def trigger_chat(request: ChatTriggerRequest, background_tasks: BackgroundTasks):
+HttpClient = Annotated[httpx.AsyncClient, Depends(get_http_client)]
+
+
+@router.post("/trigger", response_model=ChatTriggerResponse, operation_id="triggerChat")
+async def trigger_chat(
+    request: ChatTriggerRequest,
+    background_tasks: BackgroundTasks,
+    http_client: HttpClient,
+) -> ChatTriggerResponse:
     """
     Endpoint for the App to trigger a new LLM task.
+    Guides the flow of the initial request (The Marshall).
     """
-    return await ChatController.trigger_chat(request, background_tasks)
+    background_tasks.add_task(chat_task_orchestrator, request, http_client)
+    return ChatTriggerResponse(status="accepted", chatId=request.chat_id)
 
-@router.post("/callback-schema-discovery", tags=["_schema"], operation_id="callbackSchemaDiscovery")
-async def callback_schema_discovery(payload: ChatCallbackPayload):
+
+@router.post(
+    "/callback-schema-discovery",
+    response_model=ChatCallbackPayload,
+    tags=["_schema"],
+    operation_id="callbackSchemaDiscovery",
+)
+async def callback_schema_discovery(payload: ChatCallbackPayload) -> ChatCallbackPayload:
     """
     Endpoint used ONLY for generating the callback payload type in the frontend SDK.
     """

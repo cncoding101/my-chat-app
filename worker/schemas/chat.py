@@ -14,6 +14,13 @@ class ChatTriggerRequest(BaseModel):
     metadata: dict[str, Any] | None = None
 
 
+class ChatTriggerResponse(BaseModel):
+    """Response returned when an LLM task is accepted."""
+
+    status: str
+    chatId: str  # noqa: N815
+
+
 class ChatCallbackPayload(BaseModel):
     """Payload sent from Worker back to App when task is complete."""
 

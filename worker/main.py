@@ -1,6 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 
+import httpx
 from fastapi import FastAPI
 
 from config import settings
@@ -16,10 +17,11 @@ logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI):
-    # Startup logic
+async def lifespan(app: FastAPI):
     logger.info(f"Starting worker in {settings.ENVIRONMENT.value} mode")
+    app.state.http_client = httpx.AsyncClient()
     yield
+    await app.state.http_client.aclose()
     logger.info("Shutting down worker")
 
 

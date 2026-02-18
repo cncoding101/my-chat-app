@@ -1,22 +1,25 @@
 import logging
 
-from fastapi import BackgroundTasks
+import httpx
 
-from business.chat_business import ChatBusiness
+from business.chat_business import process_llm_task
 from schemas.chat import ChatCallbackPayload, ChatTriggerRequest
 from services.callback_service import send_callback
 
 logger = logging.getLogger(__name__)
 
 
-async def chat_task_orchestrator(request: ChatTriggerRequest):
+async def chat_task_orchestrator(
+    request: ChatTriggerRequest,
+    http_client: httpx.AsyncClient,
+) -> None:
     """
     The Orchestrator (Marshall) for the background task.
     Flow: Business Logic -> Callback Service.
     """
     try:
         # 1. Call Business Logic
-        response_text = await ChatBusiness.process_llm_task(request)
+        response_text = await process_llm_task(request)
 
         # 2. Prepare Payload
         callback_payload = ChatCallbackPayload(
@@ -24,21 +27,11 @@ async def chat_task_orchestrator(request: ChatTriggerRequest):
         )
 
         # 3. Call Callback Service
-        await send_callback(str(request.callback_url), callback_payload)
+        await send_callback(http_client, str(request.callback_url), callback_payload)
     except Exception as e:
         logger.error(f"Error in chat task orchestrator for {request.chat_id}: {e}")
-        # Optionally send an error callback
+        # Send an error callback
         error_payload = ChatCallbackPayload(
             chatId=request.chat_id, response="", status="error", error=str(e)
         )
-        await send_callback(str(request.callback_url), error_payload)
-
-
-class ChatController:
-    @staticmethod
-    async def trigger_chat(request: ChatTriggerRequest, background_tasks: BackgroundTasks):
-        """
-        Guides the flow of the initial request (The Marshall).
-        """
-        background_tasks.add_task(chat_task_orchestrator, request)
-        return {"status": "accepted", "chatId": request.chat_id}
+        await send_callback(http_client, str(request.callback_url), error_payload)
