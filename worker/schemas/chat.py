@@ -9,7 +9,7 @@ class ChatTriggerRequest(BaseModel):
     chat_id: str
     message: str
     callback_url: HttpUrl
-    provider: str | None = "gemini"  # e.g., "gemini", "mock"
+    provider: str | None = None  # e.g., "gemini", "ollama", "mock" — defaults to LLM_PROVIDER
     model: str | None = None  # specific model name
     metadata: dict[str, Any] | None = None
 

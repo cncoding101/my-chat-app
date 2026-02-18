@@ -28,9 +28,15 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
 
     # LLM settings
-    GOOGLE_API_KEY: str
+    LLM_PROVIDER: str = "gemini"
     LLM_MODEL: str = "gemini-2.0-flash-lite"
     LLM_MAX_OUTPUT_TOKENS: int = 1024
+
+    # Google Gemini settings (required when LLM_PROVIDER=gemini)
+    GOOGLE_API_KEY: str = ""
+
+    # Ollama settings (used when LLM_PROVIDER=ollama)
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
 
     # HTTP client settings
     CALLBACK_TIMEOUT: int = 30
