@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+
+@import 'tw-animate-css';
+
+@theme {
+  --color-base-100: #ffffff;
+  --color-primary: #0a569a;
+  --color-primary-content: #ffffff;
+  --color-secondary: #e6ffdc;
+  --color-secondary-content: #000000;
+  --color-accent: #ff5b66;
+  --color-accent-content: #000000;
+  --color-neutral: #f9f9f9;
+  --color-neutral-content: #000000;
+  --color-info: #c1e0fa;
+  --color-info-content: #000000;
+  --color-success: #a4ff80;
+  --color-success-content: #3d5434;
+  --color-warning: #ffed65;
+  --color-warning-content: #544e21;
+  --color-error: #ff0000;
+  --color-error-content: #540000;
+  --color-backdrop: #c1e0fa66;
+
+  --radius-selector: 0.5rem;
+  --radius-box: 0.5rem;
+  --border: 1px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+a,
+button,
+input,
+select {
+  cursor: pointer;
+}
+
+.modal::backdrop,
+.modal-backdrop {
+  background-color: var(--color-backdrop);
+  backdrop-filter: blur(1px);
+}

@@ -1,12 +1,12 @@
 import { defineConfig } from 'orval';
 
 export default defineConfig({
-	worker: {
-		input: './generated/worker-openapi.json',
-		output: {
-			target: './src/lib/backend/services/clients/worker.ts',
-			client: 'fetch',
-			baseUrl: 'http://localhost:8000' // Default worker URL
-		}
-	}
+  server: {
+    input: '../server/generated/server-openapi.json',
+    output: {
+      target: './src/api/generated/server.client.ts',
+      client: 'fetch',
+      baseUrl: '',
+    },
+  },
 });

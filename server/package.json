@@ -1,0 +1,44 @@
+{
+  "name": "server",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "nest start",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "bootstrap:db": "prisma migrate dev && prisma generate",
+    "generate:worker": "orval --config orval.config.ts",
+    "export:openapi": "ts-node -r tsconfig-paths/register scripts/export-openapi.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/swagger": "^11.2.6",
+    "@prisma/adapter-pg": "^7.4.0",
+    "@prisma/client": "^7.1.0",
+    "consola": "^3.4.2",
+    "dotenv": "^17.2.3",
+    "pg": "^8.18.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.16.0",
+    "openapi-typescript": "^7.13.0",
+    "orval": "^8.4.0",
+    "prisma": "^7.1.0",
+    "source-map-support": "^0.5.21",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.3"
+  }
+}
