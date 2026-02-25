@@ -13,7 +13,7 @@ class ToolRegistry:
         self._tools: dict[str, Tool] = {}
 
     def register(self, tool: Tool) -> None:
-        logger.info(f"Registering tool: {tool.name}")
+        logger.info(f'Registering tool: {tool.name}')
         self._tools[tool.name] = tool
 
     def get(self, name: str) -> Tool:

@@ -5,8 +5,8 @@ import { MessageRepository } from './message.repository';
 import { CommonModule } from '../common/common.module';
 
 @Module({
-  imports: [CommonModule],
-  controllers: [MessageController],
-  providers: [MessageService, MessageRepository],
+	imports: [CommonModule],
+	controllers: [MessageController],
+	providers: [MessageService, MessageRepository]
 })
 export class MessageModule {}

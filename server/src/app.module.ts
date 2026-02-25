@@ -6,6 +6,6 @@ import { PrismaModule } from './prisma/prisma.module';
 import { WorkerModule } from './worker/worker.module';
 
 @Module({
-  imports: [PrismaModule, ChatModule, MessageModule, WorkerModule, DocumentModule],
+	imports: [PrismaModule, ChatModule, MessageModule, WorkerModule, DocumentModule]
 })
 export class AppModule {}

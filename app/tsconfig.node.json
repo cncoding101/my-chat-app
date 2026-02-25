@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2023"],
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"skipLibCheck": true,
+		"noEmit": true,
+		"strict": true,
+		"isolatedModules": true
+	},
+	"include": [
+		"vite.config.ts",
+		"eslint.config.ts",
+		"playwright.config.ts",
+		"orval.config.ts",
+		"vite-env.d.ts"
+	]
+}

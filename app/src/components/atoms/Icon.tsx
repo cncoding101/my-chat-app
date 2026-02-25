@@ -3,85 +3,85 @@ import { useMemo } from 'react';
 import { unreachable } from '@/utils/helpers/unreachable';
 
 export const ICONS = {
-  outlined: {
-    download: 'ic:outline-file-download',
-    preview: 'ic:outline-visibility',
-    user: 'ic:outline-person',
-    cart: 'ic:outline-shopping-bag',
-    close: 'ic:outline-close',
-    settings: 'ic:outline-settings',
-    search: 'ic:outline-search',
-    upload: 'ic:outline-upload',
-    delete: 'ic:outline-delete',
-    edit: 'ic:outline-edit',
-    menu: 'ic:outline-menu',
-    back: 'ic:outline-keyboard-backspace',
-    forward: 'ic:outline-arrow-forward-ios',
-    check: 'ic:outline-check-circle',
-    compare: 'ic:outline-compare-arrows',
-    openNew: 'ic:outline-open-in-new',
-    sync: 'ic:outline-sync',
-    move: 'ic:outline-drive-file-move',
-    undo: 'ic:outline-undo',
-    send: 'mdi:send',
-    library: 'ic:outline-local-library',
-    attach: 'ic:outline-attach-file',
-    awesome: 'ic:outline-auto-awesome',
-    add: 'ic:outline-add',
-    chat: 'ic:outline-chat-bubble-outline',
-    error: 'ic:outline-error',
-  },
-  filled: {
-    download: 'ic:baseline-file-download',
-    preview: 'ic:baseline-visibility',
-    user: 'ic:baseline-person',
-    cart: 'ic:baseline-shopping-bag',
-    close: 'ic:baseline-close',
-    settings: 'ic:baseline-settings',
-    search: 'ic:baseline-search',
-    upload: 'ic:baseline-upload',
-    delete: 'ic:baseline-delete',
-    edit: 'ic:baseline-edit',
-    menu: 'ic:baseline-menu',
-    back: 'ic:baseline-keyboard-backspace',
-    forward: 'ic:baseline-arrow-forward-ios',
-    check: 'ic:baseline-check-circle',
-    compare: 'ic:baseline-compare-arrows',
-    openNew: 'ic:baseline-open-in-new',
-    sync: 'ic:baseline-sync',
-    move: 'ic:baseline-drive-file-move',
-    undo: 'ic:baseline-undo',
-    send: 'ic:baseline-send',
-    library: 'ic:baseline-local-library',
-    attach: 'ic:baseline-attach-file',
-    awesome: 'ic:baseline-auto-awesome',
-    add: 'ic:baseline-add',
-    chat: 'ic:baseline-chat-bubble',
-  },
-  round: {
-    download: 'ic:round-file-download',
-    preview: 'ic:round-visibility',
-    user: 'ic:round-person',
-    cart: 'ic:round-shopping-bag',
-    close: 'ic:round-close',
-    chat: 'ic:round-chat-bubble',
-  },
-  sharp: {
-    download: 'ic:sharp-file-download',
-    preview: 'ic:sharp-visibility',
-    user: 'ic:sharp-person',
-    cart: 'ic:sharp-shopping-bag',
-    close: 'ic:sharp-close',
-    chat: 'ic:sharp-chat-bubble',
-  },
-  'two-tone': {
-    download: 'ic:twotone-file-download',
-    preview: 'ic:twotone-visibility',
-    user: 'ic:twotone-person',
-    cart: 'ic:twotone-shopping-bag',
-    close: 'ic:twotone-close',
-    chat: 'ic:twotone-chat-bubble',
-  },
+	outlined: {
+		download: 'ic:outline-file-download',
+		preview: 'ic:outline-visibility',
+		user: 'ic:outline-person',
+		cart: 'ic:outline-shopping-bag',
+		close: 'ic:outline-close',
+		settings: 'ic:outline-settings',
+		search: 'ic:outline-search',
+		upload: 'ic:outline-upload',
+		delete: 'ic:outline-delete',
+		edit: 'ic:outline-edit',
+		menu: 'ic:outline-menu',
+		back: 'ic:outline-keyboard-backspace',
+		forward: 'ic:outline-arrow-forward-ios',
+		check: 'ic:outline-check-circle',
+		compare: 'ic:outline-compare-arrows',
+		openNew: 'ic:outline-open-in-new',
+		sync: 'ic:outline-sync',
+		move: 'ic:outline-drive-file-move',
+		undo: 'ic:outline-undo',
+		send: 'mdi:send',
+		library: 'ic:outline-local-library',
+		attach: 'ic:outline-attach-file',
+		awesome: 'ic:outline-auto-awesome',
+		add: 'ic:outline-add',
+		chat: 'ic:outline-chat-bubble-outline',
+		error: 'ic:outline-error'
+	},
+	filled: {
+		download: 'ic:baseline-file-download',
+		preview: 'ic:baseline-visibility',
+		user: 'ic:baseline-person',
+		cart: 'ic:baseline-shopping-bag',
+		close: 'ic:baseline-close',
+		settings: 'ic:baseline-settings',
+		search: 'ic:baseline-search',
+		upload: 'ic:baseline-upload',
+		delete: 'ic:baseline-delete',
+		edit: 'ic:baseline-edit',
+		menu: 'ic:baseline-menu',
+		back: 'ic:baseline-keyboard-backspace',
+		forward: 'ic:baseline-arrow-forward-ios',
+		check: 'ic:baseline-check-circle',
+		compare: 'ic:baseline-compare-arrows',
+		openNew: 'ic:baseline-open-in-new',
+		sync: 'ic:baseline-sync',
+		move: 'ic:baseline-drive-file-move',
+		undo: 'ic:baseline-undo',
+		send: 'ic:baseline-send',
+		library: 'ic:baseline-local-library',
+		attach: 'ic:baseline-attach-file',
+		awesome: 'ic:baseline-auto-awesome',
+		add: 'ic:baseline-add',
+		chat: 'ic:baseline-chat-bubble'
+	},
+	round: {
+		download: 'ic:round-file-download',
+		preview: 'ic:round-visibility',
+		user: 'ic:round-person',
+		cart: 'ic:round-shopping-bag',
+		close: 'ic:round-close',
+		chat: 'ic:round-chat-bubble'
+	},
+	sharp: {
+		download: 'ic:sharp-file-download',
+		preview: 'ic:sharp-visibility',
+		user: 'ic:sharp-person',
+		cart: 'ic:sharp-shopping-bag',
+		close: 'ic:sharp-close',
+		chat: 'ic:sharp-chat-bubble'
+	},
+	'two-tone': {
+		download: 'ic:twotone-file-download',
+		preview: 'ic:twotone-visibility',
+		user: 'ic:twotone-person',
+		cart: 'ic:twotone-shopping-bag',
+		close: 'ic:twotone-close',
+		chat: 'ic:twotone-chat-bubble'
+	}
 } as const;
 
 export type IconType = keyof typeof ICONS;
@@ -92,48 +92,40 @@ export type SharpVariant = keyof (typeof ICONS)['sharp'];
 export type TwoToneVariant = keyof (typeof ICONS)['two-tone'];
 
 export type IconVariant =
-  | { type: 'outlined'; icon: OutlinedVariant }
-  | { type: 'filled'; icon: FilledVariant }
-  | { type: 'round'; icon: RoundVariant }
-  | { type: 'sharp'; icon: SharpVariant }
-  | { type: 'two-tone'; icon: TwoToneVariant };
+	| { type: 'outlined'; icon: OutlinedVariant }
+	| { type: 'filled'; icon: FilledVariant }
+	| { type: 'round'; icon: RoundVariant }
+	| { type: 'sharp'; icon: SharpVariant }
+	| { type: 'two-tone'; icon: TwoToneVariant };
 
 interface IconProps {
-  variant: IconVariant;
-  size?: number | string;
-  color?: string;
-  className?: string;
+	variant: IconVariant;
+	size?: number | string;
+	color?: string;
+	className?: string;
 }
 
 export const Icon = ({ variant, color, size = '1.5rem', className }: IconProps) => {
-  const iconName = useMemo(() => {
-    const { icon, type } = variant;
+	const iconName = useMemo(() => {
+		const { icon, type } = variant;
 
-    switch (type) {
-      case 'outlined':
-        return ICONS.outlined[icon as OutlinedVariant];
-      case 'filled':
-        return ICONS.filled[icon as FilledVariant];
-      case 'round':
-        return ICONS.round[icon as RoundVariant];
-      case 'sharp':
-        return ICONS.sharp[icon as SharpVariant];
-      case 'two-tone':
-        return ICONS['two-tone'][icon as TwoToneVariant];
-      default:
-        return unreachable(type);
-    }
-  }, [variant]);
+		switch (type) {
+			case 'outlined':
+				return ICONS.outlined[icon as OutlinedVariant];
+			case 'filled':
+				return ICONS.filled[icon as FilledVariant];
+			case 'round':
+				return ICONS.round[icon as RoundVariant];
+			case 'sharp':
+				return ICONS.sharp[icon as SharpVariant];
+			case 'two-tone':
+				return ICONS['two-tone'][icon as TwoToneVariant];
+			default:
+				return unreachable(type);
+		}
+	}, [variant]);
 
-  if (!iconName) return null;
-
-  return (
-    <IconifyIcon
-      icon={iconName}
-      color={color}
-      width={size}
-      height={size}
-      className={className}
-    />
-  );
+	return (
+		<IconifyIcon icon={iconName} color={color} width={size} height={size} className={className} />
+	);
 };

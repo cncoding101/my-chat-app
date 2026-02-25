@@ -3,7 +3,7 @@ import { WorkerService } from './worker.service';
 
 @Global()
 @Module({
-  providers: [WorkerService],
-  exports: [WorkerService],
+	providers: [WorkerService],
+	exports: [WorkerService]
 })
 export class WorkerModule {}

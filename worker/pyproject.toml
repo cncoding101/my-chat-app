@@ -33,34 +33,6 @@ dev = [
     "basedpyright>=1.27.1",
 ]
 
-[tool.ruff]
-# Match app project's printWidth
-line-length = 100
-target-version = "py311"
-
-[tool.ruff.lint]
-select = [
-    "E",    # pycodestyle errors
-    "W",    # pycodestyle warnings
-    "F",    # pyflakes
-    "I",    # isort (import ordering, like eslint-plugin-import)
-    "N",    # pep8-naming (like @typescript-eslint/naming-convention)
-    "UP",   # pyupgrade
-    "B",    # flake8-bugbear
-    "C4",   # flake8-comprehensions
-    "SIM",  # flake8-simplify
-    "TCH",  # flake8-type-checking
-    "ARG",  # flake8-unused-arguments
-    "PTH",  # flake8-use-pathlib
-    "RUF",  # Ruff-specific rules
-]
-ignore = [
-    "E501", # Line too long (handled by formatter)
-]
-
-[tool.ruff.lint.isort]
-known-first-party = ["business", "config", "controllers", "routers", "schemas", "services", "tools"]
-
 [tool.basedpyright]
 typeCheckingMode = "recommended"
 pythonVersion = "3.11"
@@ -75,4 +47,3 @@ reportUnusedCallResult = false
 reportExplicitAny = false  # Allow Any type for flexible schemas
 reportAny = false  # Allow Any in kwargs and flexible parameters
 reportUnknownVariableType = false  # Third-party packages without stubs
-

@@ -22,6 +22,6 @@ def export_openapi():
 
     print(f"Exported OpenAPI schema to {output_path}")
 
+
 if __name__ == "__main__":
     export_openapi()
-

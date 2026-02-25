@@ -1,0 +1,65 @@
+{
+  "format_on_save": "on",
+  "formatter": "prettier",
+  "code_actions_on_format": {
+    "source.fixAll.eslint": true,
+  },
+  "lsp": {
+    "vscode-css-language-server": {
+      "settings": {
+        "css": {
+          "lint": {
+            "unknownAtRules": "ignore",
+          },
+        },
+      },
+    },
+    "eslint": {
+      "settings": {
+        "experimental": {
+          "useFlatConfig": true,
+        },
+      },
+    },
+    "pyright": {
+      "settings": {
+        "python": {
+          "pythonPath": "./worker/.venv/Scripts/python",
+        },
+      },
+    },
+    "ruff": {
+      "initialization_options": {
+        "settings": {
+          "configuration": "./worker/ruff.toml",
+        },
+      },
+    },
+  },
+  "languages": {
+    "TypeScript": {
+      "formatter": "prettier",
+      "language_servers": ["typescript-language-server", "eslint"],
+    },
+    "TSX": {
+      "formatter": "prettier",
+      "language_servers": ["typescript-language-server", "eslint"],
+    },
+    "JavaScript": {
+      "formatter": "prettier",
+      "language_servers": ["typescript-language-server", "eslint"],
+    },
+    "Python": {
+      "language_servers": ["pyright", "ruff"],
+      "code_actions_on_format": {
+        "source.fixAll.ruff": true,
+        "source.organizeImports.ruff": true,
+      },
+      "formatter": {
+        "language_server": {
+          "name": "ruff",
+        },
+      },
+    },
+  },
+}

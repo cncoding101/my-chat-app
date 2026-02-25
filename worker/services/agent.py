@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 MAX_TOOL_ITERATIONS = 3
 
 DEFAULT_SYSTEM_INSTRUCTION = (
-    "You are a helpful AI assistant. Use the available tools to look up information "
+    'You are a helpful AI assistant. Use the available tools to look up information '
     "when the user's question could benefit from specific knowledge from the knowledge base."
 )
 
@@ -35,11 +35,11 @@ class Agent:
         system_instruction: str | None = None,
     ) -> str:
         """Run the agent loop: generate -> execute tools -> repeat until text response."""
-        messages: list[LLMMessage] = [LLMMessage(role="user", text=message)]
+        messages: list[LLMMessage] = [LLMMessage(role='user', text=message)]
         tool_defs = self._build_tool_definitions()
 
         for iteration in range(MAX_TOOL_ITERATIONS):
-            logger.info(f"Agent iteration {iteration + 1}")
+            logger.info(f'Agent iteration {iteration + 1}')
 
             response = await self.provider.generate_with_tools(
                 messages=messages,
@@ -51,33 +51,33 @@ class Agent:
 
             messages.append(
                 LLMMessage(
-                    role="assistant",
+                    role='assistant',
                     text=response.text,
                     function_calls=response.function_calls,
                 )
             )
 
             if not response.has_function_calls:
-                return response.text or ""
+                return response.text or ''
 
             function_results: list[FunctionResult] = []
             for fc in response.function_calls:
-                logger.info(f"Tool call: {fc.name}({fc.args})")
+                logger.info(f'Tool call: {fc.name}({fc.args})')
                 try:
                     result = await self.tool_registry.execute(fc.name, fc.args)
                     function_results.append(
-                        FunctionResult(name=fc.name, response={"result": result})
+                        FunctionResult(name=fc.name, response={'result': result})
                     )
                 except Exception as e:
                     logger.error(f"Tool '{fc.name}' failed: {e}")
                     function_results.append(
-                        FunctionResult(name=fc.name, response={"error": str(e)})
+                        FunctionResult(name=fc.name, response={'error': str(e)})
                     )
 
-            messages.append(LLMMessage(role="tool", function_results=function_results))
+            messages.append(LLMMessage(role='tool', function_results=function_results))
 
-        logger.warning("Agent reached maximum tool iterations")
-        return "I was unable to complete the request within the allowed number of steps."
+        logger.warning('Agent reached maximum tool iterations')
+        return 'I was unable to complete the request within the allowed number of steps.'
 
     def _build_tool_definitions(self) -> list[ToolDefinition] | None:
         """Convert registered tools to provider-agnostic definitions."""

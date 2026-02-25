@@ -1,3 +1,3 @@
 export const ChatInputControls = () => {
-  return null;
+	return null;
 };

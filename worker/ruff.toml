@@ -1,0 +1,30 @@
+line-length = 100
+target-version = "py311"
+
+[lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort (import ordering, like eslint-plugin-import)
+    "N",    # pep8-naming (like @typescript-eslint/naming-convention)
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+    "TCH",  # flake8-type-checking
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "RUF",  # Ruff-specific rules
+    "W191", # indentation contains tabs
+]
+ignore = [
+    "E501", # Line too long (handled by formatter)
+]
+
+[lint.isort]
+known-first-party = ["business", "config", "controllers", "routers", "schemas", "services", "tools"]
+
+[format]
+quote-style = "single"
+docstring-code-format = true
