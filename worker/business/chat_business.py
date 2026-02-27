@@ -18,7 +18,7 @@ async def process_llm_task(
     falls back to direct LLM generation otherwise.
     """
     provider_name = request.provider or settings.LLM_PROVIDER
-    logger.info(f"Processing LLM task for chat {request.chat_id} using provider: {provider_name}")
+    logger.info(f'Processing LLM task for chat {request.chat_id} using provider: {provider_name}')
 
     try:
         provider = LLMFactory.get_provider(provider_name, model_name=request.model)
@@ -29,9 +29,9 @@ async def process_llm_task(
         else:
             response_text = await provider.generate_response(prompt=request.message)
 
-        logger.info(f"Successfully generated response for chat {request.chat_id}")
+        logger.info(f'Successfully generated response for chat {request.chat_id}')
         return response_text
 
     except Exception as e:
-        logger.error(f"Error processing LLM task for chat {request.chat_id}: {e!s}")
+        logger.error(f'Error processing LLM task for chat {request.chat_id}: {e!s}')
         raise e

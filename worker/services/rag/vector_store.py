@@ -13,7 +13,6 @@ from qdrant_client.models import (
 )
 
 from config import settings
-from services.rag.embeddings import EMBEDDING_DIMENSIONS
 
 logger = logging.getLogger(__name__)
 
@@ -23,25 +22,28 @@ class VectorStore:
 
     client: AsyncQdrantClient
     collection_name: str
+    vector_size: int
 
     def __init__(
         self,
+        vector_size: int,
         client: AsyncQdrantClient,
         collection_name: str | None = None,
     ):
         self.client = client
         self.collection_name = collection_name or settings.QDRANT_COLLECTION
+        self.vector_size = vector_size
 
     async def ensure_collection(self) -> None:
         collections = await self.client.get_collections()
         existing = [c.name for c in collections.collections]
 
         if self.collection_name not in existing:
-            logger.info(f"Creating Qdrant collection: {self.collection_name}")
+            logger.info(f'Creating Qdrant collection: {self.collection_name}')
             await self.client.create_collection(
                 collection_name=self.collection_name,
                 vectors_config=VectorParams(
-                    size=EMBEDDING_DIMENSIONS,
+                    size=self.vector_size,
                     distance=Distance.COSINE,
                 ),
             )
@@ -58,9 +60,9 @@ class VectorStore:
                 id=str(uuid4()),
                 vector=embedding,
                 payload={
-                    "document_id": document_id,
-                    "text": chunk,
-                    "chunk_index": i,
+                    'document_id': document_id,
+                    'text': chunk,
+                    'chunk_index': i,
                     **(metadata or {}),
                 },
             )
@@ -72,7 +74,7 @@ class VectorStore:
             points=points,
         )
 
-        logger.info(f"Stored {len(points)} chunks for document {document_id}")
+        logger.info(f'Stored {len(points)} chunks for document {document_id}')
         return len(points)
 
     async def search(
@@ -89,10 +91,10 @@ class VectorStore:
 
         return [
             {
-                "text": point.payload.get("text", "") if point.payload else "",
-                "document_id": point.payload.get("document_id", "") if point.payload else "",
-                "score": point.score,
-                "chunk_index": point.payload.get("chunk_index", 0) if point.payload else 0,
+                'text': point.payload.get('text', '') if point.payload else '',
+                'document_id': point.payload.get('document_id', '') if point.payload else '',
+                'score': point.score,
+                'chunk_index': point.payload.get('chunk_index', 0) if point.payload else 0,
             }
             for point in results.points
         ]
@@ -104,11 +106,11 @@ class VectorStore:
                 filter=Filter(
                     must=[
                         FieldCondition(
-                            key="document_id",
+                            key='document_id',
                             match=MatchValue(value=document_id),
                         )
                     ]
                 )
             ),
         )
-        logger.info(f"Deleted chunks for document {document_id}")
+        logger.info(f'Deleted chunks for document {document_id}')

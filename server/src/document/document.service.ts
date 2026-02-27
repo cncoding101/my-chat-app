@@ -1,34 +1,26 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { DocumentRepository } from './document.repository';
-
-const WORKER_URL = process.env.WORKER_URL ?? 'http://localhost:8000';
+import {
+	ingestDocument,
+	ingestURL as workerIngestURL,
+	deleteDocument
+} from '../worker/clients/worker.client';
 
 @Injectable()
 export class DocumentService {
 	constructor(private readonly documentRepository: DocumentRepository) {}
 
 	async ingestFile(file: Express.Multer.File) {
-		const formData = new FormData();
 		const uint8 = new Uint8Array(file.buffer);
 		const blob = new Blob([uint8], { type: file.mimetype });
-		formData.append('file', blob, file.originalname);
 
-		const response = await fetch(`${WORKER_URL}/documents/ingest`, {
-			method: 'POST',
-			body: formData
-		});
+		const response = await ingestDocument({ file: blob });
 
-		if (!response.ok) {
-			const error = await response.text();
-			throw new BadRequestException(`Document ingestion failed: ${error}`);
+		if (response.status !== 200) {
+			throw new BadRequestException('Document ingestion failed');
 		}
 
-		const result = (await response.json()) as {
-			document_id: string;
-			filename: string;
-			chunk_count: number;
-			status: string;
-		};
+		const result = response.data;
 
 		return this.documentRepository.create({
 			id: result.document_id,
@@ -40,23 +32,13 @@ export class DocumentService {
 	}
 
 	async ingestURL(url: string) {
-		const response = await fetch(`${WORKER_URL}/documents/ingest-url`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ url })
-		});
+		const response = await workerIngestURL({ url });
 
-		if (!response.ok) {
-			const error = await response.text();
-			throw new BadRequestException(`URL ingestion failed: ${error}`);
+		if (response.status !== 200) {
+			throw new BadRequestException('URL ingestion failed');
 		}
 
-		const result = (await response.json()) as {
-			document_id: string;
-			filename: string;
-			chunk_count: number;
-			status: string;
-		};
+		const result = response.data;
 
 		return this.documentRepository.create({
 			id: result.document_id,
@@ -73,7 +55,7 @@ export class DocumentService {
 
 	async remove(id: string) {
 		try {
-			await fetch(`${WORKER_URL}/documents/${id}`, { method: 'DELETE' });
+			await deleteDocument(id);
 		} catch (error) {
 			console.error('Failed to delete from worker:', error);
 		}

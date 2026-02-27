@@ -1,0 +1,15 @@
+{
+  "typeCheckingMode": "recommended",
+  "pythonVersion": "3.11",
+  "include": ["."],
+  "exclude": ["**/__pycache__", "**/myenv", "**/.venv", "**/venv"],
+  "venvPath": ".",
+  "venv": ".venv",
+  "reportUnusedVariable": "warning",
+  "reportUnusedImport": "warning",
+  "reportMissingTypeStubs": false,
+  "reportUnusedCallResult": false,
+  "reportExplicitAny": false,
+  "reportAny": false,
+  "reportUnknownVariableType": false
+}

@@ -12,7 +12,7 @@ def export_openapi():
     openapi_schema = app.openapi()
 
     # Ensure the directory exists
-    output_dir = Path(__file__).resolve().parent.parent.parent / "app" / "generated"
+    output_dir = Path(__file__).resolve().parent.parent.parent / "server" / "generated"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_path = output_dir / "worker-openapi.json"

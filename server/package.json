@@ -4,9 +4,8 @@
 	"version": "0.0.1",
 	"scripts": {
 		"build": "nest build",
-		"dev": "nest start --watch",
+		"dev": "nest start --debug --watch",
 		"start": "nest start",
-		"start:debug": "nest start --debug --watch",
 		"start:prod": "node dist/main",
 		"format": "prettier --write .",
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

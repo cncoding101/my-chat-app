@@ -6,7 +6,7 @@ export default defineConfig({
 		output: {
 			target: './src/worker/clients/worker.client.ts',
 			client: 'fetch',
-			baseUrl: 'http://localhost:8000'
+			baseUrl: 'http://127.0.0.1:8000'
 		}
 	}
 });

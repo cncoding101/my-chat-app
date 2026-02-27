@@ -21,6 +21,7 @@ dependencies = [
 
 [tool.poe.tasks]
 start = "uvicorn main:app --reload"
+dev = "python -m debugpy --listen 5678 -m uvicorn main:app --reload"
 openapi = "python scripts/export_openapi.py"
 lint = "ruff check ."
 format = "ruff format ."
@@ -28,22 +29,8 @@ check = "basedpyright ."
 
 [dependency-groups]
 dev = [
+    "debugpy>=1.8.0",
     "poethepoet>=0.37.0",
     "ruff>=0.9.4",
     "basedpyright>=1.27.1",
 ]
-
-[tool.basedpyright]
-typeCheckingMode = "recommended"
-pythonVersion = "3.11"
-include = ["."]
-exclude = ["**/__pycache__", "**/myenv", "**/.venv", "**/venv"]
-venvPath = "."
-venv = ".venv"
-reportUnusedVariable = "warning"
-reportUnusedImport = "warning"
-reportMissingTypeStubs = false
-reportUnusedCallResult = false
-reportExplicitAny = false  # Allow Any type for flexible schemas
-reportAny = false  # Allow Any in kwargs and flexible parameters
-reportUnknownVariableType = false  # Third-party packages without stubs

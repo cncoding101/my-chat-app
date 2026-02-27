@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { triggerChatChatTriggerPost, type ChatTriggerRequest } from './clients/worker.client';
+import { triggerChat, type ChatTriggerRequest } from './clients/worker.client';
 
 interface TriggerChatRequest {
 	chatId: string;
@@ -18,7 +18,7 @@ export class WorkerService {
 		};
 
 		try {
-			const response = await triggerChatChatTriggerPost(payload);
+			const response = await triggerChat(payload);
 
 			if (response.status !== 200) {
 				console.error('Worker triggerChat failed:', response.status, response.data);

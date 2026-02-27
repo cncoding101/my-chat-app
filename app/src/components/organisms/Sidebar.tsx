@@ -98,7 +98,7 @@ export const Sidebar = ({ chats }: SidebarProps) => {
 				<LinkIcon
 					to="/documents"
 					icon={{ type: 'outlined', icon: 'library' }}
-					className={`w-full ${location.pathname === '/documents' ? 'bg-gray-200' : ''}`}
+					className={`flex w-full justify-center ${location.pathname === '/documents' ? 'bg-gray-200' : ''}`}
 				>
 					Knowledge Base
 				</LinkIcon>
