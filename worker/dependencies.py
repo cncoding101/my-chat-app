@@ -8,16 +8,16 @@ to inject the required service into a route handler.
 import httpx
 from fastapi import Request
 
-from services.rag.ingestion import IngestionService
-from services.tool_registry import ToolRegistry
+from business.chat import ChatService
+from business.ingestion import IngestionService
 
 
 def get_http_client(request: Request) -> httpx.AsyncClient:
     return request.app.state.http_client
 
 
-def get_tool_registry(request: Request) -> ToolRegistry:
-    return request.app.state.tool_registry
+def get_chat_service(request: Request) -> ChatService:
+    return request.app.state.chat_service
 
 
 def get_ingestion_service(request: Request) -> IngestionService:

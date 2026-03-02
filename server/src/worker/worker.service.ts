@@ -3,7 +3,10 @@ import { triggerChat, type ChatTriggerRequest } from './clients/worker.client';
 
 interface TriggerChatRequest {
 	chatId: string;
-	message: string;
+	messages: {
+		role: string;
+		content: string;
+	}[];
 	callbackUrl: string;
 }
 
@@ -12,7 +15,7 @@ export class WorkerService {
 	async triggerChat(request: TriggerChatRequest): Promise<boolean> {
 		const payload: ChatTriggerRequest = {
 			chat_id: request.chatId,
-			message: request.message,
+			messages: request.messages,
 			callback_url: request.callbackUrl,
 			metadata: {}
 		};

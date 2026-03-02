@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+from schemas.chat import ChatMessage
+
 from .types import LLMMessage, LLMResponse, ToolDefinition
 
 
@@ -15,17 +17,19 @@ class LLMProvider(ABC):
 
     async def generate_response(
         self,
-        prompt: str,
+        messages: list[ChatMessage],
         system_instruction: str | None = None,
         history: list[dict[str, str]] | None = None,  # noqa: ARG002  # pyright: ignore[reportUnusedParameter]
         **kwargs: Any,
     ) -> str:
         """Simple text generation without tools."""
-        messages = [LLMMessage(role="user", text=prompt)]
+        formatted_messages = [
+            LLMMessage(role=message.role, text=message.content) for message in messages
+        ]
         response = await self.generate_with_tools(
-            messages, system_instruction=system_instruction, **kwargs
+            formatted_messages, system_instruction=system_instruction, **kwargs
         )
-        return response.text or ""
+        return response.text or ''
 
     @abstractmethod
     async def generate_with_tools(

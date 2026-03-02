@@ -22,6 +22,7 @@ export const useChatEvents = (chatId: string, callbacks: ChatEventsCallbacks) =>
 
 		es.onopen = () => {
 			setStatus('connected');
+			setError(null);
 		};
 
 		es.addEventListener('message', (event) => {

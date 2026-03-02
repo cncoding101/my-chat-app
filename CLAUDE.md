@@ -74,6 +74,25 @@ After changing server API contracts, always regenerate the app client.
 
 `atoms` → `molecules` → `organisms` → `pages`. API calls live in `app/src/api/`.
 
+### Worker Layered Architecture
+
+The worker follows a strict `routers → controllers → business → services` dependency flow. Each layer may only import from layers below it — never upward.
+
+| Layer | Folder | Responsibility | May import from |
+|---|---|---|---|
+| **Routers** | `routers/` | HTTP concerns: routes, FastAPI `Depends()`, request/response schemas | controllers, business (for type annotations), schemas, dependencies |
+| **Controllers** | `controllers/` | Orchestration: coordinate business logic and services, handle errors | business, services, schemas |
+| **Business** | `business/` | Core domain logic: agent loop, ingestion pipeline, retrieval, parsing, chunking | services, schemas, config |
+| **Services** | `services/` | External I/O only: LLM APIs, embedding APIs, Qdrant, HTTP callbacks/fetches | config, external libraries |
+
+Rules:
+- **Services must never import from business, controllers, or routers**
+- **Business must never import from controllers or routers**
+- Stateful orchestrators (classes with injected dependencies) go in `business/` — e.g., `ChatService`, `IngestionService`, `Agent`
+- Stateless pure functions (no dependencies) also go in `business/` — e.g., `parsers.py`, `chunker.py`
+- Routers construct and return response schema objects; controllers return domain objects
+- Singletons are created in `main.py` lifespan and injected via `dependencies.py`
+
 ### Worker LLM & Embedding Providers
 
 Configured via environment variables. Supported providers:

@@ -2,7 +2,7 @@ from typing import Any
 
 from typing_extensions import override
 
-from services.rag.retriever import Retriever
+from business.retriever import Retriever
 from tools.base import Tool
 
 

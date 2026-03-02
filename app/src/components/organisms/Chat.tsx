@@ -48,7 +48,7 @@ export const Chat = ({ initialMessages = [], chatId }: ChatProps) => {
 	return (
 		<div className="grid h-full grid-rows-[1fr_auto]">
 			<div className="relative">
-				<div className="absolute inset-0 overflow-y-auto">
+				<div className="absolute inset-0 overflow-y-auto py-2">
 					<ChatMessages messages={messages} isPending={isPending} errorMessage={errorMessage} />
 				</div>
 			</div>

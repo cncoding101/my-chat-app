@@ -14,12 +14,36 @@ export class MessageRepository {
 
 	async create({ chatId, content, role }: CreateMessageParams) {
 		try {
-			return await this.prisma.message.create({
+			const result = await this.prisma.message.create({
 				data: { content, chatId, role }
 			});
+
+			if (!result) {
+				return null;
+			}
+
+			const messages = await this._getAllByChatId(chatId);
+
+			if (messages.length === 0) {
+				return null;
+			}
+
+			return {
+				currentMessage: messages[messages.length - 1],
+				messages
+			};
 		} catch (error) {
 			console.error(error);
 			return null;
+		}
+	}
+
+	async _getAllByChatId(chatId: string) {
+		try {
+			return await this.prisma.message.findMany({ where: { chatId } });
+		} catch (error) {
+			console.error(error);
+			return [];
 		}
 	}
 }

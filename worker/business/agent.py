@@ -1,9 +1,11 @@
 import logging
 
 from config import settings
+from schemas.chat import ChatMessage
 from services.llm.base import LLMProvider
 from services.llm.types import FunctionResult, LLMMessage, ToolDefinition
-from services.tool_registry import ToolRegistry
+
+from .tool_registry import ToolRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -31,25 +33,27 @@ class Agent:
 
     async def run(
         self,
-        message: str,
+        messages: list[ChatMessage],
         system_instruction: str | None = None,
     ) -> str:
         """Run the agent loop: generate -> execute tools -> repeat until text response."""
-        messages: list[LLMMessage] = [LLMMessage(role='user', text=message)]
+        formatted_messages: list[LLMMessage] = [
+            LLMMessage(role='user', text=message.content) for message in messages
+        ]
         tool_defs = self._build_tool_definitions()
 
         for iteration in range(MAX_TOOL_ITERATIONS):
             logger.info(f'Agent iteration {iteration + 1}')
 
             response = await self.provider.generate_with_tools(
-                messages=messages,
+                messages=formatted_messages,
                 tools=tool_defs,
                 system_instruction=system_instruction or DEFAULT_SYSTEM_INSTRUCTION,
                 temperature=0.7,
                 max_tokens=settings.LLM_MAX_OUTPUT_TOKENS,
             )
 
-            messages.append(
+            formatted_messages.append(
                 LLMMessage(
                     role='assistant',
                     text=response.text,
@@ -74,7 +78,7 @@ class Agent:
                         FunctionResult(name=fc.name, response={'error': str(e)})
                     )
 
-            messages.append(LLMMessage(role='tool', function_results=function_results))
+            formatted_messages.append(LLMMessage(role='tool', function_results=function_results))
 
         logger.warning('Agent reached maximum tool iterations')
         return 'I was unable to complete the request within the allowed number of steps.'

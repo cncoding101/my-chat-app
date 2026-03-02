@@ -13,22 +13,29 @@ export class MessageService {
 	) {}
 
 	async create(chatId: string, { content }: CreateMessageDto) {
-		const message = await this.messageRepository.create({
+		const result = await this.messageRepository.create({
 			chatId,
 			content,
 			role: 'USER'
 		});
 
-		if (!message) {
+		if (!result) {
 			throw new BadRequestException('Failed to create message');
 		}
 
+		const { currentMessage, messages } = result;
+
 		const appUrl = process.env.APP_URL ?? 'http://localhost:3001';
-		const callbackUrl = `${appUrl.replace(/:\d+$/, ':' + (process.env.PORT ?? '3001'))}/api/chats/${chatId}/messages/${message.id}/callback`;
+		const callbackUrl = `${appUrl.replace(/:\d+$/, ':' + (process.env.PORT ?? '3001'))}/api/chats/${chatId}/messages/${currentMessage.id}/callback`;
 
 		const success = await this.workerService.triggerChat({
 			chatId,
-			message: content,
+			messages: messages.map((m) => {
+				return {
+					role: m.role,
+					content: m.content
+				};
+			}),
 			callbackUrl
 		});
 
@@ -36,7 +43,7 @@ export class MessageService {
 			throw new BadRequestException('Failed to process the worker request');
 		}
 
-		return { id: message.id, content: message.content, role: message.role };
+		return { id: currentMessage.id, content: currentMessage.content, role: currentMessage.role };
 	}
 
 	async handleCallback(chatId: string, payload: ChatCallbackDto) {
@@ -46,24 +53,26 @@ export class MessageService {
 			throw new BadRequestException('Failed to process message');
 		}
 
-		const message = await this.messageRepository.create({
+		const result = await this.messageRepository.create({
 			chatId,
 			content: payload.response,
 			role: 'ASSISTANT'
 		});
 
-		if (!message) {
+		if (!result) {
 			console.error(`Failed to save assistant message for chat ${chatId}`);
 			this.chatEventBus.publishError(chatId, 'Failed to process message, please try again.');
 			throw new BadRequestException('Failed to save assistant message');
 		}
 
+		const { currentMessage } = result;
+
 		this.chatEventBus.publishMessage(chatId, {
-			id: message.id,
-			content: message.content,
-			role: message.role
+			id: currentMessage.id,
+			content: currentMessage.content,
+			role: currentMessage.role
 		});
 
-		return { status: 'success', messageId: message.id };
+		return { status: 'success', messageId: currentMessage.id };
 	}
 }

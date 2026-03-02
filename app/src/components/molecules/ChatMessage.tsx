@@ -34,7 +34,9 @@ export const ChatMessage = ({ message, role }: ChatMessageProps) => {
 	return (
 		<div className={containerVariants({ role })}>
 			<div className={cn(messageVariants({ role }))}>
-				<Text variant="paragraph">{message}</Text>
+				<Text variant="paragraph" color="inherit">
+					{message}
+				</Text>
 			</div>
 		</div>
 	);

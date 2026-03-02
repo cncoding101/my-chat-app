@@ -1,7 +1,6 @@
 import logging
 
 import fitz
-import httpx
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
@@ -29,12 +28,6 @@ def parse_html(html: str) -> str:
         element.decompose()
 
     return str(soup.get_text(separator='\n', strip=True))
-
-
-async def fetch_and_parse_url(url: str, http_client: httpx.AsyncClient) -> str:
-    response = await http_client.get(url, follow_redirects=True, timeout=30.0)
-    response.raise_for_status()
-    return parse_html(response.text)
 
 
 def parse_document(content: bytes, filename: str, content_type: str | None = None) -> str:

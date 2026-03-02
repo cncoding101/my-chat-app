@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import type { MessageResponse } from '@/api/generated/server.client';
 import { Icon } from '@/components/atoms/Icon';
 import { Text } from '@/components/atoms/Text';
@@ -14,6 +15,12 @@ export const ChatMessages = ({
 	isPending = false,
 	errorMessage = null
 }: ChatMessagesProps) => {
+	const bottomRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+	}, [messages, isPending]);
+
 	return (
 		<ul>
 			{messages.map((message) => (
@@ -47,6 +54,7 @@ export const ChatMessages = ({
 					</div>
 				</li>
 			)}
+			<div ref={bottomRef} />
 		</ul>
 	);
 };

@@ -3,10 +3,10 @@ from dataclasses import dataclass
 from uuid import uuid4
 
 from services.embedding import EmbeddingProvider
+from services.rag.vector_store import VectorStore
 
 from .chunker import chunk_text
 from .parsers import parse_document
-from .vector_store import VectorStore
 
 logger = logging.getLogger(__name__)
 

@@ -12,9 +12,9 @@ export class DocumentService {
 
 	async ingestFile(file: Express.Multer.File) {
 		const uint8 = new Uint8Array(file.buffer);
-		const blob = new Blob([uint8], { type: file.mimetype });
+		const fileBlob = new File([uint8], file.originalname, { type: file.mimetype });
 
-		const response = await ingestDocument({ file: blob });
+		const response = await ingestDocument({ file: fileBlob });
 
 		if (response.status !== 200) {
 			throw new BadRequestException('Document ingestion failed');

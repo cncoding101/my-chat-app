@@ -1,8 +1,7 @@
 import logging
 
 from services.embedding import EmbeddingProvider
-
-from .vector_store import VectorStore
+from services.rag.vector_store import VectorStore
 
 logger = logging.getLogger(__name__)
 

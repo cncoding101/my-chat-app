@@ -17,7 +17,7 @@ class OllamaProvider(EmbeddingProvider):
     def __init__(self, model_name: str | None = None):
         self.model_name = model_name or settings.EMBEDDING_MODEL
         self.base_url = settings.OLLAMA_BASE_URL or 'http://localhost:11434'
-        self.client = httpx.AsyncClient()
+        self.client = httpx.AsyncClient(timeout=httpx.Timeout(120.0))
         self._dimensions = settings.EMBEDDING_DIMENSIONS
 
     @property

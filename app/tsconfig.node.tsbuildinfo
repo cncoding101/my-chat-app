@@ -1,0 +1,1 @@
+{"root":["./vite.config.ts","./eslint.config.ts","./playwright.config.ts","./orval.config.ts","./vite-env.d.ts"],"errors":true,"version":"5.9.3"}

@@ -5,14 +5,15 @@ import httpx
 from fastapi import FastAPI
 from qdrant_client import AsyncQdrantClient
 
+from business.chat import ChatService
+from business.ingestion import IngestionService
+from business.retriever import Retriever
+from business.tool_registry import ToolRegistry
 from config import settings
 from routers.chat import router as chat_router
 from routers.documents import router as documents_router
 from services.embedding import EmbeddingFactory
-from services.rag.ingestion import IngestionService
-from services.rag.retriever import Retriever
 from services.rag.vector_store import VectorStore
-from services.tool_registry import ToolRegistry
 from tools.rag_tool import RAGTool
 
 logging.basicConfig(
@@ -47,11 +48,13 @@ async def lifespan(app: FastAPI):
     tool_registry = ToolRegistry()
     tool_registry.register(RAGTool(retriever))
 
+    chat_service = ChatService(tool_registry)
+
     app.state.qdrant_client = qdrant_client
     app.state.embedding_provider = embedding_provider
     app.state.vector_store = vector_store
     app.state.ingestion_service = ingestion_service
-    app.state.tool_registry = tool_registry
+    app.state.chat_service = chat_service
 
     logger.info('Worker initialized with RAG tool')
 

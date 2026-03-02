@@ -7,7 +7,8 @@ import {
 	Body,
 	UseInterceptors,
 	UploadedFile,
-	BadRequestException
+	ParseFilePipe,
+	FileTypeValidator
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse, ApiParam, ApiConsumes, ApiBody } from '@nestjs/swagger';
@@ -25,16 +26,25 @@ export class DocumentController {
 	@ApiBody({
 		schema: {
 			type: 'object',
+			required: ['file'],
 			properties: {
 				file: { type: 'string', format: 'binary' }
 			}
 		}
 	})
 	@ApiResponse({ status: 201, type: DocumentResponse })
-	async upload(@UploadedFile() file: Express.Multer.File) {
-		if (!file) {
-			throw new BadRequestException('No file provided');
-		}
+	async upload(
+		@UploadedFile(
+			new ParseFilePipe({
+				validators: [
+					new FileTypeValidator({
+						fileType: /(pdf|plain|markdown|csv|json|xml|yaml|html|octet-stream)$/
+					})
+				]
+			})
+		)
+		file: Express.Multer.File
+	) {
 		return this.documentService.ingestFile(file);
 	}
 
