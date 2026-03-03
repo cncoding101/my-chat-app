@@ -38,7 +38,7 @@ class Agent:
     ) -> str:
         """Run the agent loop: generate -> execute tools -> repeat until text response."""
         formatted_messages: list[LLMMessage] = [
-            LLMMessage(role='user', text=message.content) for message in messages
+            LLMMessage(role=message.role, text=message.content) for message in messages
         ]
         tool_defs = self._build_tool_definitions()
 

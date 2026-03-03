@@ -8,6 +8,7 @@ from typing_extensions import override
 from config import settings
 
 from .base import LLMProvider
+from .constants import ROLE_ASSISTANT, ROLE_TOOL, ROLE_USER
 from .types import FunctionCall, LLMMessage, LLMResponse, ToolDefinition
 
 logger = logging.getLogger(__name__)
@@ -22,9 +23,7 @@ class GeminiProvider(LLMProvider):
     def __init__(self, api_key: str | None = None, model_name: str | None = None):
         api_key = api_key or settings.GOOGLE_API_KEY
         if not api_key:
-            raise ValueError(
-                "GOOGLE_API_KEY is required for GeminiProvider. Get one at https://aistudio.google.com/apikey"
-            )
+            raise ValueError('GOOGLE_API_KEY is required for GeminiProvider.')
         self.client = genai.Client(api_key=api_key)
         self.model_name = model_name or settings.LLM_MODEL
 
@@ -42,8 +41,8 @@ class GeminiProvider(LLMProvider):
         config = types.GenerateContentConfig(
             system_instruction=system_instruction,
             tools=gemini_tools,
-            temperature=kwargs.get("temperature", 0.7),
-            max_output_tokens=kwargs.get("max_tokens", settings.LLM_MAX_OUTPUT_TOKENS),
+            temperature=kwargs.get('temperature', 0.7),
+            max_output_tokens=kwargs.get('max_tokens', settings.LLM_MAX_OUTPUT_TOKENS),
         )
 
         try:
@@ -53,7 +52,7 @@ class GeminiProvider(LLMProvider):
                 config=config,
             )
         except Exception as e:
-            raise Exception(f"Gemini API error: {e!s}") from e
+            raise Exception(f'Gemini API error: {e!s}') from e
 
         if not response.candidates:
             return LLMResponse()
@@ -80,9 +79,9 @@ class GeminiProvider(LLMProvider):
         """Convert abstract messages → Gemini ``types.Content`` list."""
         contents: list[Any] = []
         for msg in messages:
-            if msg.role == "user":
-                contents.append(types.Content(role="user", parts=[types.Part(text=msg.text or "")]))
-            elif msg.role == "assistant":
+            if msg.role.lower() == ROLE_USER:
+                contents.append(types.Content(role='user', parts=[types.Part(text=msg.text or '')]))
+            elif msg.role.lower() == ROLE_ASSISTANT:
                 parts: list[Any] = []
                 if msg.text:
                     parts.append(types.Part(text=msg.text))
@@ -91,16 +90,16 @@ class GeminiProvider(LLMProvider):
                         types.Part(function_call=types.FunctionCall(name=fc.name, args=fc.args))
                     )
                 if not parts:
-                    parts.append(types.Part(text=""))
-                contents.append(types.Content(role="model", parts=parts))
-            elif msg.role == "tool":
+                    parts.append(types.Part(text=''))
+                contents.append(types.Content(role='model', parts=parts))
+            elif msg.role.lower() == ROLE_TOOL:
                 parts = [
                     types.Part(
                         function_response=types.FunctionResponse(name=fr.name, response=fr.response)
                     )
                     for fr in msg.function_results
                 ]
-                contents.append(types.Content(role="user", parts=parts))
+                contents.append(types.Content(role='user', parts=parts))
         return contents
 
     def _to_gemini_tools(self, tools: list[ToolDefinition]) -> list[Any]:
@@ -112,8 +111,8 @@ class GeminiProvider(LLMProvider):
                 required: list[str] = []
                 for param_name, param_info in tool.parameters.items():
                     properties[param_name] = types.Schema(
-                        type=types.Type(param_info.get("type", "STRING")),
-                        description=param_info.get("description", ""),
+                        type=types.Type(param_info.get('type', 'STRING')),
+                        description=param_info.get('description', ''),
                     )
                     required.append(param_name)
                 declaration = types.FunctionDeclaration(

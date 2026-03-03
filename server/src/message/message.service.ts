@@ -55,7 +55,7 @@ export class MessageService {
 
 		const result = await this.messageRepository.create({
 			chatId,
-			content: payload.response,
+			content: payload.content,
 			role: 'ASSISTANT'
 		});
 

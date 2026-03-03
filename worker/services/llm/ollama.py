@@ -8,6 +8,7 @@ from typing_extensions import override
 from config import settings
 
 from .base import LLMProvider
+from .constants import ROLE_ASSISTANT, ROLE_TOOL, ROLE_USER
 from .types import FunctionCall, LLMMessage, LLMResponse, ToolDefinition
 
 logger = logging.getLogger(__name__)
@@ -39,14 +40,16 @@ class OllamaProvider(LLMProvider):
                 model=self.model_name,
                 messages=ollama_messages,
                 tools=ollama_tools,
+                think=True,
+                stream=False,
                 options={
-                    "temperature": kwargs.get("temperature", 0.7),
-                    "num_predict": kwargs.get("max_tokens", settings.LLM_MAX_OUTPUT_TOKENS),
+                    'temperature': kwargs.get('temperature', 0.7),
+                    'num_predict': kwargs.get('max_tokens', settings.LLM_MAX_OUTPUT_TOKENS),
                 },
             )
         except Exception as e:
             raise Exception(
-                f"Ollama error: {e!s}. Is Ollama running at {settings.OLLAMA_BASE_URL}?"
+                f'Ollama error: {e!s}. Is Ollama running at {settings.OLLAMA_BASE_URL}?'
             ) from e
 
         message = response.message
@@ -73,28 +76,28 @@ class OllamaProvider(LLMProvider):
         result: list[dict[str, Any]] = []
 
         if system_instruction:
-            result.append({"role": "system", "content": system_instruction})
+            result.append({'role': 'system', 'content': system_instruction})
 
         for msg in messages:
-            if msg.role == "user":
-                result.append({"role": "user", "content": msg.text or ""})
-            elif msg.role == "assistant":
-                entry: dict[str, Any] = {"role": "assistant", "content": msg.text or ""}
+            if msg.role.lower() == ROLE_USER:
+                result.append({'role': ROLE_USER, 'content': msg.text or ''})
+            elif msg.role.lower() == ROLE_ASSISTANT:
+                entry: dict[str, Any] = {'role': ROLE_ASSISTANT, 'content': msg.text or ''}
                 if msg.function_calls:
-                    entry["tool_calls"] = [
+                    entry['tool_calls'] = [
                         {
-                            "type": "function",
-                            "function": {
-                                "name": fc.name,
-                                "arguments": fc.args,
+                            'type': 'function',
+                            'function': {
+                                'name': fc.name,
+                                'arguments': fc.args,
                             },
                         }
                         for fc in msg.function_calls
                     ]
                 result.append(entry)
-            elif msg.role == "tool":
+            elif msg.role.lower() == ROLE_TOOL:
                 for fr in msg.function_results:
-                    result.append({"role": "tool", "content": json.dumps(fr.response)})
+                    result.append({'role': ROLE_TOOL, 'content': json.dumps(fr.response)})
 
         return result
 
@@ -108,21 +111,21 @@ class OllamaProvider(LLMProvider):
             if tool.parameters:
                 for name, info in tool.parameters.items():
                     properties[name] = {
-                        "type": info.get("type", "string").lower(),
-                        "description": info.get("description", ""),
+                        'type': info.get('type', 'string').lower(),
+                        'description': info.get('description', ''),
                     }
                     required.append(name)
 
             result.append(
                 {
-                    "type": "function",
-                    "function": {
-                        "name": tool.name,
-                        "description": tool.description,
-                        "parameters": {
-                            "type": "object",
-                            "properties": properties,
-                            "required": required,
+                    'type': 'function',
+                    'function': {
+                        'name': tool.name,
+                        'description': tool.description,
+                        'parameters': {
+                            'type': 'object',
+                            'properties': properties,
+                            'required': required,
                         },
                     },
                 }

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
+import type { ChatCallbackPayload } from '../worker/clients/worker.client';
 
 export class CreateMessageDto {
 	@ApiProperty({ minLength: 1 })
@@ -9,7 +10,7 @@ export class CreateMessageDto {
 	content!: string;
 }
 
-export class ChatCallbackDto {
+export class ChatCallbackDto implements ChatCallbackPayload {
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
@@ -17,7 +18,7 @@ export class ChatCallbackDto {
 
 	@ApiProperty()
 	@IsString()
-	response!: string;
+	content!: string;
 
 	@ApiProperty({ required: false })
 	@IsString()

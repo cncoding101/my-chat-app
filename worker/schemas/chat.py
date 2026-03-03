@@ -32,6 +32,6 @@ class ChatCallbackPayload(BaseModel):
     """Payload sent from Worker back to App when task is complete."""
 
     chatId: str  # noqa: N815
-    response: str
+    content: str
     status: str = 'completed'
     error: str | None = None

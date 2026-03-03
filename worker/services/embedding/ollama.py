@@ -1,9 +1,15 @@
+from typing import TypedDict
+
 import httpx
 from typing_extensions import override
 
 from config import settings
 
 from .base import EmbeddingProvider
+
+
+class OllamaEmbedResponse(TypedDict):
+    embeddings: list[list[float]]
 
 
 class OllamaProvider(EmbeddingProvider):
@@ -32,8 +38,8 @@ class OllamaProvider(EmbeddingProvider):
             json={'model': self.model_name, 'input': text, 'dimensions': self._dimensions},
         )
         response.raise_for_status()
-        data = response.json()
-        return data['embedding'][0]
+        data: OllamaEmbedResponse = response.json()
+        return data['embeddings'][0]
 
     @override
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:
@@ -45,5 +51,5 @@ class OllamaProvider(EmbeddingProvider):
             json={'model': self.model_name, 'input': texts, 'dimensions': self._dimensions},
         )
         response.raise_for_status()
-        data = response.json()
+        data: OllamaEmbedResponse = response.json()
         return data['embeddings']

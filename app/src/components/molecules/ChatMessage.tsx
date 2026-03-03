@@ -1,6 +1,7 @@
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { tv } from 'tailwind-variants';
 import { MessageResponseRole } from '@/api/generated/server.client';
-import { Text } from '@/components/atoms/Text';
 import { cn } from '@/utils/helpers/cn';
 
 interface ChatMessageProps {
@@ -12,19 +13,19 @@ const containerVariants = tv({
 	base: 'flex w-full',
 	variants: {
 		role: {
-			[MessageResponseRole.USER]: 'justify-start',
-			[MessageResponseRole.ASSISTANT]: 'justify-end',
-			[MessageResponseRole.TOOL]: 'justify-end'
+			[MessageResponseRole.USER]: 'justify-end',
+			[MessageResponseRole.ASSISTANT]: 'justify-start',
+			[MessageResponseRole.TOOL]: 'justify-start'
 		}
 	}
 });
 
 const messageVariants = tv({
-	base: 'p-2 rounded-lg max-w-[80%]',
+	base: 'p-2 rounded-lg',
 	variants: {
 		role: {
 			[MessageResponseRole.USER]: 'bg-primary text-primary-content',
-			[MessageResponseRole.ASSISTANT]: 'bg-secondary text-secondary-content',
+			[MessageResponseRole.ASSISTANT]: 'bg-base-100 text-base-content',
 			[MessageResponseRole.TOOL]: 'bg-accent text-accent-content'
 		}
 	}
@@ -33,10 +34,8 @@ const messageVariants = tv({
 export const ChatMessage = ({ message, role }: ChatMessageProps) => {
 	return (
 		<div className={containerVariants({ role })}>
-			<div className={cn(messageVariants({ role }))}>
-				<Text variant="paragraph" color="inherit">
-					{message}
-				</Text>
+			<div className={cn(messageVariants({ role }), 'chat-markdown')}>
+				<ReactMarkdown remarkPlugins={[remarkGfm]}>{message}</ReactMarkdown>
 			</div>
 		</div>
 	);

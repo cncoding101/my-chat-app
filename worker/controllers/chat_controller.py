@@ -22,13 +22,13 @@ async def chat_task_orchestrator(
         response_text = await chat_service.process_llm_task(request)
 
         callback_payload = ChatCallbackPayload(
-            chatId=request.chat_id, response=response_text, status='completed'
+            chatId=request.chat_id, content=response_text, status='completed'
         )
 
         await send_callback(http_client, str(request.callback_url), callback_payload)
     except Exception as e:
         logger.error(f'Error in chat task orchestrator for {request.chat_id}: {e}')
         error_payload = ChatCallbackPayload(
-            chatId=request.chat_id, response='', status='error', error=str(e)
+            chatId=request.chat_id, content='', status='error', error=str(e)
         )
         await send_callback(http_client, str(request.callback_url), error_payload)
