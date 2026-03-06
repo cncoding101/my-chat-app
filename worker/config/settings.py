@@ -50,6 +50,17 @@ class Settings(BaseSettings):
     EMBEDDING_MODEL: str
     EMBEDDING_DIMENSIONS: int
 
+    # Tokenizer settings
+    TOKENIZER_PROVIDER: str = 'whitespace'
+
+    # Chunker settings
+    CHUNKER_STRATEGY: str
+    CHUNKER_CHUNK_SIZE: int = 200
+    CHUNKER_CHUNK_OVERLAP: int = 50
+    CHUNKER_SIMILARITY_THRESHOLD: float = 0.6
+    CHUNKER_MAX_CHUNKS_TOKENS: int = 500
+    CHUNKER_MIN_CHUNKS_TOKENS: int = 50
+
     @property
     def is_development(self) -> bool:
         """Check if running in development mode."""

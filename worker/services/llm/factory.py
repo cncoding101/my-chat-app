@@ -1,6 +1,5 @@
 from .base import LLMProvider
 from .gemini import GeminiProvider
-from .mock import MockProvider
 from .ollama import OllamaProvider
 
 
@@ -15,8 +14,6 @@ class LLMFactory:
             return GeminiProvider(model_name=model_name) if model_name else GeminiProvider()
         elif provider_name == 'ollama':
             return OllamaProvider(model_name=model_name) if model_name else OllamaProvider()
-        elif provider_name == 'mock':
-            return MockProvider()
         else:
             raise ValueError(
                 f"Unknown LLM provider: '{provider_name}'. Supported providers: gemini, ollama, mock"

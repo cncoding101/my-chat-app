@@ -16,11 +16,11 @@ try:
 except ValidationError as e:
     errors: list[str] = []
     for error in e.errors():
-        field = ".".join(str(loc) for loc in error["loc"])
-        message = str(error["msg"])
-        errors.append(f"  - {field}: {message}")
+        field = '.'.join(str(loc) for loc in error['loc'])
+        message = str(error['msg'])
+        errors.append(f'  - {field}: {message}')
 
-    error_message = "Environment validation failed:\n" + "\n".join(errors)
+    error_message = 'Environment validation failed:\n' + '\n'.join(errors)
     raise SystemExit(error_message) from e
 
-__all__ = ["Environment", "Settings", "settings"]
+__all__ = ['Environment', 'Settings', 'settings']

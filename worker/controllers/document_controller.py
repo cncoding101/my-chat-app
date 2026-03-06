@@ -1,7 +1,8 @@
 import httpx
 
-from business.ingestion import IngestionService, IngestResult
-from business.parsers import parse_html
+from business.rag.ingestion import IngestionService, IngestResult
+from business.rag.parser import parse_html
+from services.rag.vector_store import VectorStore
 from services.web_fetcher import fetch_url
 
 
@@ -28,9 +29,9 @@ async def ingest_url(
     html = await fetch_url(url, http_client)
     text = parse_html(html)
     return await ingestion_service.ingest(
-        content=text.encode("utf-8"),
+        content=text.encode('utf-8'),
         filename=url,
-        content_type="text/html",
+        content_type='text/html',
     )
 
 
@@ -40,3 +41,11 @@ async def delete_document(
 ) -> None:
     """Delete a document and its chunks from the vector store."""
     await ingestion_service.delete(document_id)
+
+
+async def get_document_chunks(
+    document_id: str,
+    vector_store: VectorStore,
+) -> list[dict[str, str | int]]:
+    """Retrieve all stored chunks for a document from the vector store."""
+    return await vector_store.get_chunks_by_document(document_id)

@@ -40,7 +40,10 @@ export class MessageRepository {
 
 	async _getAllByChatId(chatId: string) {
 		try {
-			return await this.prisma.message.findMany({ where: { chatId } });
+			return await this.prisma.message.findMany({
+				where: { chatId },
+				orderBy: { createdAt: 'asc' }
+			});
 		} catch (error) {
 			console.error(error);
 			return [];

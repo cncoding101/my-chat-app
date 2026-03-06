@@ -12,16 +12,16 @@ dependencies = [
     "pydantic-settings>=2.7.0",
     "python-dotenv>=1.0.0",
     "typing-extensions>=4.15.0",
-    "ollama>=0.4.0",
+    "ollama===0.6.1",
     "qdrant-client>=1.12.0",
     "pymupdf>=1.25.0",
     "beautifulsoup4>=4.13.0",
     "python-multipart>=0.0.20",
+    "numpy>=2.4.2",
 ]
 
 [tool.poe.tasks]
 start = "uvicorn main:app --reload"
-dev = "python -m debugpy --listen 5678 -m uvicorn main:app --reload"
 openapi = "python scripts/export_openapi.py"
 lint = "ruff check ."
 format = "ruff format ."
@@ -29,7 +29,6 @@ check = "basedpyright ."
 
 [dependency-groups]
 dev = [
-    "debugpy>=1.8.0",
     "poethepoet>=0.37.0",
     "ruff>=0.9.4",
     "basedpyright>=1.27.1",

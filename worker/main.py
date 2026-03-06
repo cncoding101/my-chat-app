@@ -6,15 +6,15 @@ from fastapi import FastAPI
 from qdrant_client import AsyncQdrantClient
 
 from business.chat import ChatService
-from business.ingestion import IngestionService
-from business.retriever import Retriever
-from business.tool_registry import ToolRegistry
+from business.rag import IngestionService, RetrieverService
+from business.rag.chunker import ChunkerFactory
+from business.tools.rag_tool import RAGTool
+from business.tools.tool_registry import ToolRegistry
 from config import settings
 from routers.chat import router as chat_router
 from routers.documents import router as documents_router
 from services.embedding import EmbeddingFactory
 from services.rag.vector_store import VectorStore
-from tools.rag_tool import RAGTool
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
@@ -42,11 +42,20 @@ async def lifespan(app: FastAPI):
     )
     await vector_store.ensure_collection()
 
-    retriever = Retriever(vector_store, embedding_provider)
-    ingestion_service = IngestionService(embedding_provider, vector_store)
+    retriever_service = RetrieverService(vector_store, embedding_provider, top_k=10)
+    chunker_strategy = ChunkerFactory.get_strategy(
+        strategy=settings.CHUNKER_STRATEGY,
+        embedding_provider=embedding_provider,
+        chunk_size=settings.CHUNKER_CHUNK_SIZE,
+        chunk_overlap=settings.CHUNKER_CHUNK_OVERLAP,
+        similarity_threshold=settings.CHUNKER_SIMILARITY_THRESHOLD,
+        max_chunk_tokens=settings.CHUNKER_MAX_CHUNKS_TOKENS,
+        min_chunk_tokens=settings.CHUNKER_MIN_CHUNKS_TOKENS,
+    )
+    ingestion_service = IngestionService(embedding_provider, chunker_strategy, vector_store)
 
     tool_registry = ToolRegistry()
-    tool_registry.register(RAGTool(retriever))
+    tool_registry.register(RAGTool(retriever_service))
 
     chat_service = ChatService(tool_registry)
 

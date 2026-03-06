@@ -5,16 +5,14 @@ from schemas.chat import ChatMessage
 from services.llm.base import LLMProvider
 from services.llm.types import FunctionResult, LLMMessage, ToolDefinition
 
-from .tool_registry import ToolRegistry
+from .tools.tool_registry import ToolRegistry
 
 logger = logging.getLogger(__name__)
 
 MAX_TOOL_ITERATIONS = 3
 
-DEFAULT_SYSTEM_INSTRUCTION = (
-    'You are a helpful AI assistant. Use the available tools to look up information '
-    "when the user's question could benefit from specific knowledge from the knowledge base."
-)
+DEFAULT_SYSTEM_INSTRUCTION = """You are a helpful AI assistant. Use the available tools to look up information
+    when the user's question could benefit from specific knowledge from the knowledge base."""
 
 
 class Agent:
@@ -69,6 +67,10 @@ class Agent:
                 logger.info(f'Tool call: {fc.name}({fc.args})')
                 try:
                     result = await self.tool_registry.execute(fc.name, fc.args)
+                    logger.debug(
+                        f'Tool result for {fc.name} '
+                        f'(length={len(result)}): {result[:500]}'
+                    )
                     function_results.append(
                         FunctionResult(name=fc.name, response={'result': result})
                     )

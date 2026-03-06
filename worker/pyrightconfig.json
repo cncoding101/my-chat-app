@@ -11,5 +11,6 @@
   "reportUnusedCallResult": false,
   "reportExplicitAny": false,
   "reportAny": false,
-  "reportUnknownVariableType": false
+  "reportUnknownVariableType": false,
+  "reportImplicitStringConcatenation": false
 }

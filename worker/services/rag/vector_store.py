@@ -99,6 +99,35 @@ class VectorStore:
             for point in results.points
         ]
 
+    async def get_chunks_by_document(self, document_id: str) -> list[dict[str, str | int]]:
+        """Return all stored chunks for a document, ordered by chunk_index."""
+        results = await self.client.scroll(
+            collection_name=self.collection_name,
+            scroll_filter=Filter(
+                must=[
+                    FieldCondition(
+                        key='document_id',
+                        match=MatchValue(value=document_id),
+                    )
+                ]
+            ),
+            with_payload=True,
+            with_vectors=False,
+            limit=1000,
+        )
+
+        points = results[0]
+        chunks = [
+            {
+                'text': point.payload.get('text', '') if point.payload else '',
+                'chunk_index': point.payload.get('chunk_index', 0) if point.payload else 0,
+                'document_id': document_id,
+                'filename': point.payload.get('filename', '') if point.payload else '',
+            }
+            for point in points
+        ]
+        return sorted(chunks, key=lambda c: c['chunk_index'])
+
     async def delete_by_document(self, document_id: str) -> None:
         await self.client.delete(
             collection_name=self.collection_name,

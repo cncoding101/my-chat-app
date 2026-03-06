@@ -3,9 +3,12 @@ from typing import Annotated
 import httpx
 from fastapi import APIRouter, Depends, UploadFile
 
-from business.ingestion import IngestionService
+from business.rag.ingestion import IngestionService
 from controllers.document_controller import (
     delete_document as ctrl_delete_document,
+)
+from controllers.document_controller import (
+    get_document_chunks as ctrl_get_document_chunks,
 )
 from controllers.document_controller import (
     ingest_document as ctrl_ingest_document,
@@ -13,8 +16,15 @@ from controllers.document_controller import (
 from controllers.document_controller import (
     ingest_url as ctrl_ingest_url,
 )
-from dependencies import get_http_client, get_ingestion_service
-from schemas.documents import DocumentDeleteResponse, DocumentResponse, IngestURLRequest
+from dependencies import get_http_client, get_ingestion_service, get_vector_store
+from schemas.documents import (
+    ChunkDetail,
+    DocumentChunksResponse,
+    DocumentDeleteResponse,
+    DocumentResponse,
+    IngestURLRequest,
+)
+from services.rag.vector_store import VectorStore
 
 router = APIRouter(prefix='/documents', tags=['documents'])
 
@@ -78,3 +88,31 @@ async def delete_document(
         ingestion_service=ingestion_service,
     )
     return DocumentDeleteResponse(status='deleted', document_id=document_id)
+
+
+@router.get(
+    '/{document_id}/chunks',
+    response_model=DocumentChunksResponse,
+    operation_id='getDocumentChunks',
+)
+async def get_document_chunks(
+    document_id: str,
+    vector_store: Annotated[VectorStore, Depends(get_vector_store)],
+) -> DocumentChunksResponse:
+    """Inspect all stored chunks for a document. Useful for debugging RAG issues."""
+    chunks = await ctrl_get_document_chunks(
+        document_id=document_id,
+        vector_store=vector_store,
+    )
+    return DocumentChunksResponse(
+        document_id=document_id,
+        chunk_count=len(chunks),
+        chunks=[
+            ChunkDetail(
+                chunk_index=int(c['chunk_index']),
+                text=str(c['text']),
+                filename=str(c['filename']),
+            )
+            for c in chunks
+        ],
+    )

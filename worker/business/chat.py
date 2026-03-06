@@ -5,7 +5,7 @@ from schemas.chat import ChatTriggerRequest
 from services.llm.factory import LLMFactory
 
 from .agent import Agent
-from .tool_registry import ToolRegistry
+from .tools.tool_registry import ToolRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,9 @@ class ChatService:
         falls back to direct LLM generation otherwise.
         """
         provider_name = request.provider or settings.LLM_PROVIDER
-        logger.info(f'Processing LLM task for chat {request.chat_id} using provider: {provider_name}')
+        logger.info(
+            f'Processing LLM task for chat {request.chat_id} using provider: {provider_name}'
+        )
 
         try:
             provider = LLMFactory.get_provider(provider_name, model_name=request.model)

@@ -9,7 +9,8 @@ import httpx
 from fastapi import Request
 
 from business.chat import ChatService
-from business.ingestion import IngestionService
+from business.rag.ingestion import IngestionService
+from services.rag.vector_store import VectorStore
 
 
 def get_http_client(request: Request) -> httpx.AsyncClient:
@@ -22,3 +23,7 @@ def get_chat_service(request: Request) -> ChatService:
 
 def get_ingestion_service(request: Request) -> IngestionService:
     return request.app.state.ingestion_service
+
+
+def get_vector_store(request: Request) -> VectorStore:
+    return request.app.state.vector_store

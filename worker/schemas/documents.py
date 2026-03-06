@@ -21,3 +21,19 @@ class DocumentDeleteResponse(BaseModel):
 
     status: str
     document_id: str
+
+
+class ChunkDetail(BaseModel):
+    """A single stored chunk."""
+
+    chunk_index: int
+    text: str
+    filename: str
+
+
+class DocumentChunksResponse(BaseModel):
+    """Response listing all chunks for a document."""
+
+    document_id: str
+    chunk_count: int
+    chunks: list[ChunkDetail]

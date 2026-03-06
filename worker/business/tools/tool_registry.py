@@ -1,7 +1,9 @@
 import logging
 from typing import Any
 
-from tools.base import Tool
+from pydantic import ValidationError
+
+from .base import Tool
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +26,11 @@ class ToolRegistry:
     async def execute(self, name: str, args: dict[str, Any]) -> str:
         tool = self.get(name)
         logger.info(f"Executing tool '{name}' with args: {args}")
-        return await tool.execute(**args)
+        try:
+            validated = tool.input_schema.model_validate(args)
+        except ValidationError as e:
+            raise ValueError(f"Invalid arguments for tool '{name}': {e}") from e
+        return await tool.execute(**validated.model_dump())
 
     @property
     def tools(self) -> list[Tool]:

@@ -2,11 +2,12 @@ import logging
 from dataclasses import dataclass
 from uuid import uuid4
 
+from business.rag.chunker.base import ChunkerStrategy
+from business.rag.chunker.semantic_chunker import SemanticChunker
 from services.embedding import EmbeddingProvider
 from services.rag.vector_store import VectorStore
 
-from .chunker import chunk_text
-from .parsers import parse_document
+from .parser import parse_document
 
 logger = logging.getLogger(__name__)
 
@@ -22,22 +23,19 @@ class IngestResult:
 class IngestionService:
     """Orchestrates the document ingestion pipeline: parse -> chunk -> embed -> store."""
 
-    embedding_provider: EmbeddingProvider
+    embedding: EmbeddingProvider
+    chunker: ChunkerStrategy
     vector_store: VectorStore
-    chunk_size: int
-    chunk_overlap: int
 
     def __init__(
         self,
-        embedding_provider: EmbeddingProvider,
+        embedding: EmbeddingProvider,
+        chunker: ChunkerStrategy,
         vector_store: VectorStore,
-        chunk_size: int = 1000,
-        chunk_overlap: int = 200,
     ):
-        self.embedding_provider = embedding_provider
+        self.embedding = embedding
+        self.chunker = chunker
         self.vector_store = vector_store
-        self.chunk_size = chunk_size
-        self.chunk_overlap = chunk_overlap
 
     async def ingest(
         self,
@@ -52,13 +50,17 @@ class IngestionService:
         if not text.strip():
             raise ValueError(f"No text content extracted from '{filename}'")
 
-        chunks = chunk_text(text, self.chunk_size, self.chunk_overlap)
+        chunks = []
+        if isinstance(self.chunker, SemanticChunker):
+            chunks = await self.chunker.chunk_text_async(text)
+        else:
+            chunks = self.chunker.chunk_text(text)
         if not chunks:
             raise ValueError(f"No chunks generated from '{filename}'")
 
         logger.info(f"Generated {len(chunks)} chunks from '{filename}'")
 
-        embeddings = await self.embedding_provider.embed_batch(chunks)
+        embeddings = await self.embedding.embed_batch(chunks)
 
         await self.vector_store.upsert_chunks(
             document_id=document_id,

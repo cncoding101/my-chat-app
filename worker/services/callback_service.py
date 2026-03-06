@@ -15,8 +15,8 @@ async def send_callback(client: httpx.AsyncClient, callback_url: str, payload: C
         response = await client.post(callback_url, json=payload.model_dump())
 
         response.raise_for_status()
-        logger.info(f"Successfully sent callback to {callback_url}")
+        logger.info(f'Successfully sent callback to {callback_url}')
         return True
     except Exception as e:
-        logger.error(f"Failed to send callback to {callback_url}: {e}")
+        logger.error(f'Failed to send callback to {callback_url}: {e}')
         return False

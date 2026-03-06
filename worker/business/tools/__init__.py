@@ -1,3 +1,3 @@
 from .base import Tool
 
-__all__ = ["Tool"]
+__all__ = ['Tool']
