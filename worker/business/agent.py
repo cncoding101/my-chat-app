@@ -11,8 +11,11 @@ logger = logging.getLogger(__name__)
 
 MAX_TOOL_ITERATIONS = 3
 
-DEFAULT_SYSTEM_INSTRUCTION = """You are a helpful AI assistant. Use the available tools to look up information
-    when the user's question could benefit from specific knowledge from the knowledge base."""
+DEFAULT_SYSTEM_INSTRUCTION = """You are a helpful AI assistant.
+When the user asks a question that could involve information from uploaded documents or the knowledge base, \
+use the search_knowledge_base tool to look it up. Once you receive results from the tool, use those results \
+to answer the user's question directly — do not call the tool again for the same query. \
+Only skip the tool for purely conversational messages that clearly do not require any document lookup."""
 
 
 class Agent:
@@ -68,14 +71,13 @@ class Agent:
                 try:
                     result = await self.tool_registry.execute(fc.name, fc.args)
                     logger.debug(
-                        f'Tool result for {fc.name} '
-                        f'(length={len(result)}): {result[:500]}'
+                        f'Tool result for {fc.name} (length={len(result)}): {result[:500]}'
                     )
                     function_results.append(
                         FunctionResult(name=fc.name, response={'result': result})
                     )
                 except Exception as e:
-                    logger.error(f"Tool '{fc.name}' failed: {e}")
+                    logger.exception(f"Tool '{fc.name}' failed: {e}")
                     function_results.append(
                         FunctionResult(name=fc.name, response={'error': str(e)})
                     )

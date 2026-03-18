@@ -1,12 +1,11 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { ChatRepository } from './chat.repository';
-import type { ChatResponse, ChatWithMessages } from './chat.dto';
 
 @Injectable()
 export class ChatService {
 	constructor(private readonly chatRepository: ChatRepository) {}
 
-	async create(): Promise<ChatResponse> {
+	async create() {
 		const chat = await this.chatRepository.create();
 		if (!chat) {
 			throw new BadRequestException('Failed to create chat');
@@ -18,7 +17,7 @@ export class ChatService {
 		return this.chatRepository.getAll();
 	}
 
-	async findById(id: string): Promise<ChatWithMessages | null> {
+	async findById(id: string) {
 		const chat = await this.chatRepository.getById(id);
 		if (!chat) return null;
 
@@ -26,10 +25,11 @@ export class ChatService {
 			...chat,
 			messages: chat.messages
 				.filter((m: { role: string }) => m.role !== 'TOOL')
-				.map((m: { id: string; content: string; role: string }) => ({
+				.map((m) => ({
 					id: m.id,
 					content: m.content,
-					role: m.role
+					role: m.role,
+					error: m.error
 				}))
 		};
 	}

@@ -4,6 +4,7 @@ export interface MessageData {
 	id: string;
 	content: string;
 	role: string;
+	error?: string;
 }
 
 export type ChatEvent =

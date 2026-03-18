@@ -50,6 +50,7 @@ async def ingest_document(
         filename=result.filename,
         chunk_count=result.chunk_count,
         status=result.status,
+        summary=result.summary,
     )
 
 
@@ -70,6 +71,7 @@ async def ingest_url(
         filename=result.filename,
         chunk_count=result.chunk_count,
         status=result.status,
+        summary=result.summary,
     )
 
 

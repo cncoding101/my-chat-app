@@ -11,6 +11,14 @@ from main import app
 def export_openapi():
     openapi_schema = app.openapi()
 
+    # Fix UploadFile binary format for Orval compatibility
+    schemas = openapi_schema.get('components', {}).get('schemas', {})
+    for schema in schemas.values():
+        for prop in schema.get('properties', {}).values():
+            if prop.get('contentMediaType'):
+                prop.pop('contentMediaType')
+                prop['format'] = 'binary'
+
     # Ensure the directory exists
     output_dir = Path(__file__).resolve().parent.parent.parent / 'server' / 'generated'
     output_dir.mkdir(parents=True, exist_ok=True)

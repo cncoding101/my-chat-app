@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from qdrant_client import AsyncQdrantClient
 
 from business.chat import ChatService
-from business.rag import IngestionService, RetrieverService
+from business.rag import IngestionService, QueryService, RetrieverService, SummaryService
 from business.rag.chunker import ChunkerFactory
 from business.tools.rag_tool import RAGTool
 from business.tools.tool_registry import ToolRegistry
@@ -14,6 +14,7 @@ from config import settings
 from routers.chat import router as chat_router
 from routers.documents import router as documents_router
 from services.embedding import EmbeddingFactory
+from services.llm.factory import LLMFactory
 from services.rag.vector_store import VectorStore
 
 logging.basicConfig(
@@ -46,18 +47,21 @@ async def lifespan(app: FastAPI):
     chunker_strategy = ChunkerFactory.get_strategy(
         strategy=settings.CHUNKER_STRATEGY,
         embedding_provider=embedding_provider,
-        chunk_size=settings.CHUNKER_CHUNK_SIZE,
-        chunk_overlap=settings.CHUNKER_CHUNK_OVERLAP,
-        similarity_threshold=settings.CHUNKER_SIMILARITY_THRESHOLD,
-        max_chunk_tokens=settings.CHUNKER_MAX_CHUNKS_TOKENS,
-        min_chunk_tokens=settings.CHUNKER_MIN_CHUNKS_TOKENS,
     )
-    ingestion_service = IngestionService(embedding_provider, chunker_strategy, vector_store)
+    llm_provider = LLMFactory.get_provider(
+        provider_name=settings.LLM_PROVIDER, model_name=settings.LLM_MODEL
+    )
+    summary_service = SummaryService(llm_provider)
+    query_service = QueryService(llm_provider)
+
+    ingestion_service = IngestionService(
+        embedding_provider, chunker_strategy, vector_store, summary_service
+    )
 
     tool_registry = ToolRegistry()
-    tool_registry.register(RAGTool(retriever_service))
+    tool_registry.register(RAGTool(retriever_service, query_service))
 
-    chat_service = ChatService(tool_registry)
+    chat_service = ChatService(tool_registry, llm_provider)
 
     app.state.qdrant_client = qdrant_client
     app.state.embedding_provider = embedding_provider

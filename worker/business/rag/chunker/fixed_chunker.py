@@ -2,7 +2,7 @@ import re
 
 from typing_extensions import override
 
-from .base import ChunkerStrategy
+from .base import ChunkerStrategy, ChunkResult
 
 
 class FixedSizeChunker(ChunkerStrategy):
@@ -18,22 +18,18 @@ class FixedSizeChunker(ChunkerStrategy):
         self.chunk_overlap = chunk_overlap
 
     @override
-    async def chunk_text_async(self, text: str) -> list[str]:
-        raise NotImplementedError('Use chunk_text instead')
-
-    @override
-    def chunk_text(self, text: str) -> list[str]:
+    async def chunk(self, text: str) -> list[ChunkResult]:
         """Split text into overlapping chunks with header-aware splitting."""
         if not text or not text.strip():
             return []
 
         sections = self._header_split(text.strip())
-        chunks: list[str] = []
+        chunks: list[ChunkResult] = []
         for header, body in sections:
             section_chunks = self._recursive_split(body, ['\n\n', '\n', '. ', '? ', '! ', ' '])
             if header:
                 section_chunks = [f'{header}\n{chunk}' for chunk in section_chunks]
-            chunks.extend(section_chunks)
+            chunks.extend(ChunkResult(text=chunk) for chunk in section_chunks)
         return chunks
 
     def _header_split(self, text: str) -> list[tuple[str | None, str]]:

@@ -27,7 +27,8 @@ export class DocumentService {
 			filename: result.filename,
 			type: this.getDocumentType(file.originalname),
 			status: result.status,
-			chunkCount: result.chunk_count
+			chunkCount: result.chunk_count,
+			summary: result.summary
 		});
 	}
 
@@ -45,7 +46,8 @@ export class DocumentService {
 			filename: url,
 			type: 'web',
 			status: result.status,
-			chunkCount: result.chunk_count
+			chunkCount: result.chunk_count,
+			summary: result.summary
 		});
 	}
 

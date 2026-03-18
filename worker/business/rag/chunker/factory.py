@@ -1,7 +1,9 @@
-from business.rag.chunker.base import ChunkerStrategy
-from business.rag.chunker.fixed_chunker import FixedSizeChunker
-from business.rag.chunker.semantic_chunker import SemanticChunker
 from services.embedding import EmbeddingProvider
+
+from .base import ChunkerStrategy
+from .fixed_chunker import FixedSizeChunker
+from .parent_child_chunker import ParentChildChunker
+from .semantic_chunker import SemanticChunker
 
 
 class ChunkerFactory:
@@ -20,18 +22,20 @@ class ChunkerFactory:
         strategy = strategy.lower()
 
         if strategy == 'fixed':
-            return FixedSizeChunker(
+            child_strategy = FixedSizeChunker(
                 chunk_size=chunk_size,
                 chunk_overlap=chunk_overlap,
             )
+            return ParentChildChunker(child_strategy=child_strategy)
         elif strategy == 'semantic':
             if embedding_provider is None:
                 raise ValueError('SemanticChunker requires an embedding_provider')
-            return SemanticChunker(
+            child_strategy = SemanticChunker(
                 embedding_provider=embedding_provider,
                 similarity_threshold=similarity_threshold,
                 max_chunk_tokens=max_chunk_tokens,
                 min_chunk_tokens=min_chunk_tokens,
             )
+            return ParentChildChunker(child_strategy=child_strategy)
         else:
             raise ValueError(f'Unsupported chunker strategy: {strategy}')

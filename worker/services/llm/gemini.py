@@ -79,9 +79,9 @@ class GeminiProvider(LLMProvider):
         """Convert abstract messages → Gemini ``types.Content`` list."""
         contents: list[Any] = []
         for msg in messages:
-            if msg.role.lower() == ROLE_USER:
+            if msg.role == ROLE_USER:
                 contents.append(types.Content(role='user', parts=[types.Part(text=msg.text or '')]))
-            elif msg.role.lower() == ROLE_ASSISTANT:
+            elif msg.role == ROLE_ASSISTANT:
                 parts: list[Any] = []
                 if msg.text:
                     parts.append(types.Part(text=msg.text))
@@ -92,7 +92,7 @@ class GeminiProvider(LLMProvider):
                 if not parts:
                     parts.append(types.Part(text=''))
                 contents.append(types.Content(role='model', parts=parts))
-            elif msg.role.lower() == ROLE_TOOL:
+            elif msg.role == ROLE_TOOL:
                 parts = [
                     types.Part(
                         function_response=types.FunctionResponse(name=fr.name, response=fr.response)

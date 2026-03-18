@@ -25,6 +25,7 @@ model Message {
   id        String   @id @default(cuid())
   content   String
   role      Role
+  error     DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
@@ -34,6 +35,7 @@ model Message {
 model Document {
   id         String   @id
   filename   String
+  summary    String
   type       String
   status     String   @default("completed")
   chunkCount Int      @default(0)

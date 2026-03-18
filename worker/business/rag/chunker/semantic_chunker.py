@@ -6,7 +6,7 @@ from typing_extensions import override
 
 from services.embedding import EmbeddingProvider
 
-from .base import ChunkerStrategy
+from .base import ChunkerStrategy, ChunkResult
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +32,7 @@ class SemanticChunker(ChunkerStrategy):
         self.min_chunk_tokens = min_chunk_tokens
 
     @override
-    def chunk_text(self, text: str) -> list[str]:
-        raise NotImplementedError('Use chunk_text_async')
-
-    @override
-    async def chunk_text_async(self, text: str) -> list[str]:
+    async def chunk(self, text: str) -> list[ChunkResult]:
         if not text or not text.strip():
             return []
 
@@ -44,14 +40,14 @@ class SemanticChunker(ChunkerStrategy):
         logger.debug(f'Split text into {len(sentences)} sentences')
 
         if len(sentences) <= 1:
-            return sentences
+            return [ChunkResult(text=sentences[0])]
 
         embeddings = await self.embedding_provider.embed_batch(sentences)
         boundaries = self._find_boundaries(embeddings)
         logger.debug(f'Found {len(boundaries)} semantic boundaries')
 
         chunks = self._group_sentences(sentences, boundaries)
-        return chunks
+        return [ChunkResult(text=chunk) for chunk in chunks]
 
     def _split_sentences(self, text: str) -> list[str]:
         raw_text = re.split(r'(?<=[.!?])\s+|\n\n+', text)

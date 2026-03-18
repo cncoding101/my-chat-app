@@ -9,14 +9,17 @@ export class MessageResponse {
 
 	@ApiProperty({ enum: ['ASSISTANT', 'USER', 'TOOL'] })
 	role!: string;
+
+	@ApiPropertyOptional({ type: String })
+	error?: string;
 }
 
 export class ChatResponse {
 	@ApiProperty()
 	id!: string;
 
-	@ApiProperty({ nullable: true, type: String })
-	title!: string | null;
+	@ApiProperty({ type: String })
+	title?: string;
 
 	@ApiPropertyOptional({ type: [MessageResponse] })
 	messages?: MessageResponse[];
@@ -26,8 +29,8 @@ export class ChatWithMessages {
 	@ApiProperty()
 	id!: string;
 
-	@ApiProperty({ nullable: true, type: String })
-	title!: string | null;
+	@ApiProperty({ type: String })
+	title?: string;
 
 	@ApiProperty()
 	createdAt!: Date;

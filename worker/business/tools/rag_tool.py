@@ -1,11 +1,14 @@
+import logging
 from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 from typing_extensions import override
 
-from business.rag import RetrieverService
+from business.rag import QueryIntent, QueryService, RetrieverService
 
 from .base import Tool
+
+logger = logging.getLogger(__name__)
 
 
 class RAGToolInput(BaseModel):
@@ -26,9 +29,11 @@ class RAGTool(Tool):
     """Searches the knowledge base for relevant information."""
 
     retriever_service: RetrieverService
+    query_service: QueryService
 
-    def __init__(self, retriever_service: RetrieverService):
+    def __init__(self, retriever_service: RetrieverService, query_service: QueryService):
         self.retriever_service = retriever_service
+        self.query_service = query_service
 
     @property
     @override
@@ -39,9 +44,9 @@ class RAGTool(Tool):
     @override
     def description(self) -> str:
         return (
-            'Search the knowledge base for relevant information about a topic. '
-            'Use this when you need to look up specific facts, details, or context '
-            'from ingested documents.'
+            'Search through uploaded documents and files in the knowledge base. '
+            'This is how you access the contents of any file the user has uploaded '
+            'Always use this tool when the user asks about, references, or wants information from their documents.'
         )
 
     @property
@@ -53,12 +58,22 @@ class RAGTool(Tool):
     async def execute(self, **kwargs: Any) -> str:
         validated = RAGToolInput.model_validate(kwargs)
 
-        results = await self.retriever_service.search(validated.query)
+        try:
+            intent = await self.query_service.classify(validated.query)
+            logger.info(f'Query intent: {intent.value} for query: {validated.query}')
+
+            if intent == QueryIntent.BROAD:
+                results = await self.retriever_service.search_summaries(validated.query)
+            else:
+                results = await self.retriever_service.search(validated.query)
+        except Exception as e:
+            logger.error(f'Knowledge base search failed: {e}')
+            return 'Something went wrong while searching the knowledge base. The documents may need to be re-ingested.'
 
         if not results:
             return 'No relevant information found in the knowledge base.'
 
         formatted = '\n\n---\n\n'.join(
-            f'[Result {i + 1}]\n{text}' for i, text in enumerate(results)
+            f'[Result {i + 1} — {r["filename"]}]\n{r["text"]}' for i, r in enumerate(results)
         )
         return f'Found {len(results)} relevant results:\n\n{formatted}'

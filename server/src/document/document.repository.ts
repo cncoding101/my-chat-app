@@ -7,6 +7,7 @@ interface CreateDocumentParams {
 	type: string;
 	status: string;
 	chunkCount: number;
+	summary: string;
 }
 
 @Injectable()

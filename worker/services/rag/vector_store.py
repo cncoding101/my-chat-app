@@ -1,6 +1,8 @@
 import logging
+from dataclasses import asdict
 from uuid import uuid4
 
+from pydantic.dataclasses import dataclass
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import (
     Distance,
@@ -15,6 +17,29 @@ from qdrant_client.models import (
 from config import settings
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class ChunkPayload:
+    text: str
+    chunk_index: int
+    document_id: str
+    filename: str
+    chunk_type: str = 'child'
+    parent_text: str | None = None
+    parent_index: int | None = None
+
+
+@dataclass
+class SearchResult:
+    text: str
+    document_id: str
+    score: float
+    chunk_index: int
+    parent_text: str | None
+    parent_index: int | None
+    chunk_type: str
+    filename: str
 
 
 class VectorStore:
@@ -50,23 +75,16 @@ class VectorStore:
 
     async def upsert_chunks(
         self,
-        document_id: str,
-        chunks: list[str],
+        chunks: list[ChunkPayload],
         embeddings: list[list[float]],
-        metadata: dict[str, str] | None = None,
     ) -> int:
         points = [
             PointStruct(
                 id=str(uuid4()),
                 vector=embedding,
-                payload={
-                    'document_id': document_id,
-                    'text': chunk,
-                    'chunk_index': i,
-                    **(metadata or {}),
-                },
+                payload=asdict(chunk),
             )
-            for i, (chunk, embedding) in enumerate(zip(chunks, embeddings, strict=True))
+            for chunk, embedding in zip(chunks, embeddings, strict=True)
         ]
 
         await self.client.upsert(
@@ -74,6 +92,7 @@ class VectorStore:
             points=points,
         )
 
+        document_id = chunks[0].document_id if chunks else 'unknown'
         logger.info(f'Stored {len(points)} chunks for document {document_id}')
         return len(points)
 
@@ -81,21 +100,29 @@ class VectorStore:
         self,
         query_vector: list[float],
         limit: int = 5,
-    ) -> list[dict[str, object]]:
+        query_filter: Filter | None = None,
+        score_threshold: float | None = None,
+    ) -> list[SearchResult]:
         results = await self.client.query_points(
             collection_name=self.collection_name,
             query=query_vector,
             limit=limit,
+            query_filter=query_filter,
             with_payload=True,
+            score_threshold=score_threshold,
         )
 
         return [
-            {
-                'text': point.payload.get('text', '') if point.payload else '',
-                'document_id': point.payload.get('document_id', '') if point.payload else '',
-                'score': point.score,
-                'chunk_index': point.payload.get('chunk_index', 0) if point.payload else 0,
-            }
+            SearchResult(
+                text=point.payload.get('text', '') if point.payload else '',
+                document_id=point.payload.get('document_id', '') if point.payload else '',
+                score=point.score if point.score else 0.0,
+                chunk_index=point.payload.get('chunk_index', 0) if point.payload else 0,
+                parent_text=point.payload.get('parent_text') if point.payload else None,
+                parent_index=point.payload.get('parent_index') if point.payload else None,
+                chunk_type=point.payload.get('chunk_type', '') if point.payload else '',
+                filename=point.payload.get('filename', '') if point.payload else '',
+            )
             for point in results.points
         ]
 

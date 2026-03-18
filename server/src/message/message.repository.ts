@@ -6,16 +6,17 @@ interface CreateMessageParams {
 	chatId: string;
 	content: string;
 	role: Role;
+	error?: Date;
 }
 
 @Injectable()
 export class MessageRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	async create({ chatId, content, role }: CreateMessageParams) {
+	async create({ chatId, content, role, error }: CreateMessageParams) {
 		try {
 			const result = await this.prisma.message.create({
-				data: { content, chatId, role }
+				data: { content, chatId, role, error }
 			});
 
 			if (!result) {

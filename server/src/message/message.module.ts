@@ -3,9 +3,10 @@ import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 import { MessageRepository } from './message.repository';
 import { CommonModule } from '../common/common.module';
+import { DocumentModule } from '@/document/document.module';
 
 @Module({
-	imports: [CommonModule],
+	imports: [CommonModule, DocumentModule],
 	controllers: [MessageController],
 	providers: [MessageService, MessageRepository]
 })

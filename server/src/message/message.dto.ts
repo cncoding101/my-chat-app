@@ -25,10 +25,10 @@ export class ChatCallbackDto implements ChatCallbackPayload {
 	@IsOptional()
 	status?: string;
 
-	@ApiProperty({ required: false, nullable: true, type: String })
+	@ApiProperty({ required: false, type: String })
 	@IsString()
 	@IsOptional()
-	error?: string | null;
+	error?: string;
 }
 
 export class MessageCallbackResponse {

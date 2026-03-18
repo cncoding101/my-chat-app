@@ -79,9 +79,9 @@ class OllamaProvider(LLMProvider):
             result.append({'role': 'system', 'content': system_instruction})
 
         for msg in messages:
-            if msg.role.lower() == ROLE_USER:
+            if msg.role == ROLE_USER:
                 result.append({'role': ROLE_USER, 'content': msg.text or ''})
-            elif msg.role.lower() == ROLE_ASSISTANT:
+            elif msg.role == ROLE_ASSISTANT:
                 entry: dict[str, Any] = {'role': ROLE_ASSISTANT, 'content': msg.text or ''}
                 if msg.function_calls:
                     entry['tool_calls'] = [
@@ -95,7 +95,7 @@ class OllamaProvider(LLMProvider):
                         for fc in msg.function_calls
                     ]
                 result.append(entry)
-            elif msg.role.lower() == ROLE_TOOL:
+            elif msg.role == ROLE_TOOL:
                 for fr in msg.function_results:
                     result.append({'role': ROLE_TOOL, 'content': json.dumps(fr.response)})
 

@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, field_validator
 
 
 class ChatMessage(BaseModel):
@@ -8,6 +8,11 @@ class ChatMessage(BaseModel):
 
     role: str
     content: str
+
+    @field_validator('role')
+    @classmethod
+    def normalized_role(cls, v: str) -> str:
+        return v.lower()
 
 
 class ChatTriggerRequest(BaseModel):

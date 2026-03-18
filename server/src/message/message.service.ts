@@ -3,13 +3,16 @@ import { MessageRepository } from './message.repository';
 import { ChatEventBus } from '../common/event-bus.service';
 import { WorkerService } from '../worker/worker.service';
 import type { CreateMessageDto, ChatCallbackDto } from './message.dto';
+import { Role } from 'generated/prisma/enums';
+import { DocumentRepository } from '@/document/document.repository';
 
 @Injectable()
 export class MessageService {
 	constructor(
 		private readonly messageRepository: MessageRepository,
 		private readonly chatEventBus: ChatEventBus,
-		private readonly workerService: WorkerService
+		private readonly workerService: WorkerService,
+		private readonly documentRepository: DocumentRepository
 	) {}
 
 	async create(chatId: string, { content }: CreateMessageDto) {
@@ -28,6 +31,9 @@ export class MessageService {
 		const appUrl = process.env.APP_URL ?? 'http://localhost:3001';
 		const callbackUrl = `${appUrl.replace(/:\d+$/, ':' + (process.env.PORT ?? '3001'))}/api/chats/${chatId}/messages/${currentMessage.id}/callback`;
 
+		const documents = await this.documentRepository.findAll();
+		const documentNames = documents.map((d) => d.filename);
+
 		const success = await this.workerService.triggerChat({
 			chatId,
 			messages: messages.map((m) => {
@@ -36,14 +42,28 @@ export class MessageService {
 					content: m.content
 				};
 			}),
-			callbackUrl
+			callbackUrl,
+			documentNames
 		});
 
 		if (!success) {
-			throw new BadRequestException('Failed to process the worker request');
+			const errorContent = 'This message could not be processed';
+			await this.messageRepository.create({
+				chatId,
+				content: errorContent,
+				role: Role.ASSISTANT,
+				error: new Date()
+			});
+
+			this.chatEventBus.publishError(chatId, errorContent);
 		}
 
-		return { id: currentMessage.id, content: currentMessage.content, role: currentMessage.role };
+		return {
+			id: currentMessage.id,
+			content: currentMessage.content,
+			role: currentMessage.role,
+			error: currentMessage.error?.toISOString()
+		};
 	}
 
 	async handleCallback(chatId: string, payload: ChatCallbackDto) {
@@ -70,7 +90,8 @@ export class MessageService {
 		this.chatEventBus.publishMessage(chatId, {
 			id: currentMessage.id,
 			content: currentMessage.content,
-			role: currentMessage.role
+			role: currentMessage.role,
+			error: currentMessage.error?.toISOString()
 		});
 
 		return { status: 'success', messageId: currentMessage.id };

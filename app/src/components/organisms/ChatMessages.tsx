@@ -7,13 +7,13 @@ import { ChatMessage } from '@/components/molecules/ChatMessage';
 interface ChatMessagesProps {
 	messages: MessageResponse[];
 	isPending?: boolean;
-	errorMessage?: string | null;
+	errorMessages?: string[];
 }
 
 export const ChatMessages = ({
 	messages,
 	isPending = false,
-	errorMessage = null
+	errorMessages = []
 }: ChatMessagesProps) => {
 	const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -23,11 +23,25 @@ export const ChatMessages = ({
 
 	return (
 		<ul>
-			{messages.map((message) => (
-				<li key={message.id} className="m-2">
-					<ChatMessage message={message.content} role={message.role} />
-				</li>
-			))}
+			{messages.map((message) => {
+				if (message.error)
+					return (
+						<li className="m-2">
+							<div className="bg-error/10 text-error flex items-center gap-2 rounded-md border p-3">
+								<Icon variant={{ type: 'outlined', icon: 'error' }} className="shrink-0" />
+								<Text variant="label" className="font-normal">
+									{message.content}
+								</Text>
+							</div>
+						</li>
+					);
+
+				return (
+					<li key={message.id} className="m-2">
+						<ChatMessage message={message.content} role={message.role} />
+					</li>
+				);
+			})}
 
 			{isPending && (
 				<li className="m-2">
@@ -44,16 +58,6 @@ export const ChatMessages = ({
 				</li>
 			)}
 
-			{errorMessage && (
-				<li className="m-2">
-					<div className="bg-error/10 text-error flex items-center gap-2 rounded-md border p-3">
-						<Icon variant={{ type: 'outlined', icon: 'error' }} className="shrink-0" />
-						<Text variant="label" className="font-normal">
-							{errorMessage}
-						</Text>
-					</div>
-				</li>
-			)}
 			<div ref={bottomRef} />
 		</ul>
 	);

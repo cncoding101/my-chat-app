@@ -3,9 +3,9 @@ from dataclasses import dataclass
 from uuid import uuid4
 
 from business.rag.chunker.base import ChunkerStrategy
-from business.rag.chunker.semantic_chunker import SemanticChunker
+from business.rag.summary import SummaryService
 from services.embedding import EmbeddingProvider
-from services.rag.vector_store import VectorStore
+from services.rag.vector_store import ChunkPayload, VectorStore
 
 from .parser import parse_document
 
@@ -18,12 +18,14 @@ class IngestResult:
     filename: str
     chunk_count: int
     status: str
+    summary: str
 
 
 class IngestionService:
     """Orchestrates the document ingestion pipeline: parse -> chunk -> embed -> store."""
 
     embedding: EmbeddingProvider
+    summarizer: SummaryService
     chunker: ChunkerStrategy
     vector_store: VectorStore
 
@@ -32,10 +34,12 @@ class IngestionService:
         embedding: EmbeddingProvider,
         chunker: ChunkerStrategy,
         vector_store: VectorStore,
+        summarizer: SummaryService,
     ):
         self.embedding = embedding
         self.chunker = chunker
         self.vector_store = vector_store
+        self.summarizer = summarizer
 
     async def ingest(
         self,
@@ -50,30 +54,49 @@ class IngestionService:
         if not text.strip():
             raise ValueError(f"No text content extracted from '{filename}'")
 
-        chunks = []
-        if isinstance(self.chunker, SemanticChunker):
-            chunks = await self.chunker.chunk_text_async(text)
-        else:
-            chunks = self.chunker.chunk_text(text)
-        if not chunks:
+        chunk_results = await self.chunker.chunk(text)
+        if not chunk_results:
             raise ValueError(f"No chunks generated from '{filename}'")
 
-        logger.info(f"Generated {len(chunks)} chunks from '{filename}'")
+        logger.info(f"Generated {len(chunk_results)} chunks from '{filename}'")
 
-        embeddings = await self.embedding.embed_batch(chunks)
+        payloads = [
+            ChunkPayload(
+                text=chunk.text,
+                chunk_index=i,
+                document_id=document_id,
+                filename=filename,
+                chunk_type=chunk.chunk_type,
+                parent_text=chunk.parent_text,
+                parent_index=chunk.parent_index,
+            )
+            for i, chunk in enumerate(chunk_results)
+        ]
+
+        summary = await self.summarizer.summarize(text)
+        payloads.append(
+            ChunkPayload(
+                text=summary,
+                chunk_index=len(payloads),
+                document_id=document_id,
+                filename=filename,
+                chunk_type='summary',
+            )
+        )
+
+        embeddings = await self.embedding.embed_batch([p.text for p in payloads])
 
         await self.vector_store.upsert_chunks(
-            document_id=document_id,
-            chunks=chunks,
+            chunks=payloads,
             embeddings=embeddings,
-            metadata={'filename': filename},
         )
 
         return IngestResult(
             document_id=document_id,
             filename=filename,
-            chunk_count=len(chunks),
+            chunk_count=len(payloads),
             status='completed',
+            summary=summary,
         )
 
     async def delete(self, document_id: str) -> None:

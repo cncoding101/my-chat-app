@@ -14,6 +14,7 @@ class DocumentResponse(BaseModel):
     filename: str
     chunk_count: int
     status: str
+    summary: str
 
 
 class DocumentDeleteResponse(BaseModel):

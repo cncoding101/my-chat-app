@@ -8,6 +8,7 @@ interface TriggerChatRequest {
 		content: string;
 	}[];
 	callbackUrl: string;
+	documentNames: string[];
 }
 
 @Injectable()
@@ -17,7 +18,9 @@ export class WorkerService {
 			chat_id: request.chatId,
 			messages: request.messages,
 			callback_url: request.callbackUrl,
-			metadata: {}
+			metadata: {
+				document_names: request.documentNames
+			}
 		};
 
 		try {
